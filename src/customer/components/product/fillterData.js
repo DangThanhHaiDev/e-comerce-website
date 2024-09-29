@@ -18,7 +18,9 @@ export const filters = [
     options: [
       { value: "small", label: "S", checked: false },
       { value: "medium", label: "M", checked: false },
-      { value: "large", label: "L", checked: true }
+      { value: "large", label: "L", checked: true },
+      { value: "XL", label: "XL", checked: true }
+
     ],
   },
   {

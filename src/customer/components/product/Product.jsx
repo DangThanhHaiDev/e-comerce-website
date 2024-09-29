@@ -33,6 +33,7 @@ import {
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import { useLocation, useNavigate } from "react-router-dom";
 
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -157,6 +158,7 @@ export default function Product() {
                                 </div>
                               ) : (
                                 <FormControlLabel
+                                onChange={(e)=>handleRadioFilter(section.id, e.target.value)}
                                   value={option.value}
                                   control={<Radio />}
                                   label={option.label}

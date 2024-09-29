@@ -6,8 +6,8 @@ import './footer.scss'
 const Footer = () => {
   return (
     <div>
-      <Grid container className="bg-black text-white text-center mt-10 py-3">
-        <Grid item xs={12} sm={6} md={3} className="sm: pb-2 md:pb-0">
+      <Grid container className="bg-black text-white text-center mt-10 py-3 max-lg:space-y-5">
+        <Grid item xs={12} lg={3} className="sm: pb-2 md:pb-0">
           <Typography className="pb-3 block" variant="h6">
             {" "}   
             Company{" "}
@@ -63,7 +63,7 @@ const Footer = () => {
             </Button>
           </div>
         </Grid>
-        <Grid item xs={12} sm={6} md={3} className="sm: pb-2 md:pb-0">
+        <Grid item xs={12} lg={3} className="sm: pb-2 md:pb-0">
           <Typography className="pb-3 block" variant="h6">
             {" "}
             Solutions{" "}
@@ -119,7 +119,7 @@ const Footer = () => {
             </Button>
           </div>
         </Grid>
-        <Grid item xs={12} sm={6} md={3} className="sm: pb-2 md:pb-0">
+        <Grid item xs={12} lg={3} className="sm: pb-2 md:pb-0">
           <Typography className="pb-3 block" variant="h6">
             {" "}
             Documentation{" "}
@@ -145,7 +145,7 @@ const Footer = () => {
             </Button>
           </div>
         </Grid>
-        <Grid item xs={12} sm={6} md={3} className="sm: pb-2 md:pb-0">
+        <Grid item xs={12} lg={3} className="sm: pb-2 md:pb-0">
           <Typography className="pb-3 block" variant="h6">
             {" "}
             Legal{" "}

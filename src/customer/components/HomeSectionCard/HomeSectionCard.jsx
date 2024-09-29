@@ -2,7 +2,7 @@ const HomeSectionCard = ({ product }) => {
   return (
     <div
       className="cursor-pointer flex flex-col items-center bg-white rounded-lg overflow-hidden
-    w-[15rem] mx-3 py-5 hover:translate-y-3 transition-transform duration-300 else-in-out "
+    w-[15rem] mx-3 py-5 hover:translate-y-3 transition-transform duration-300 else-in-out max-xl:w-full"
       style={{ boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px" }}
     >
       <div className="h-[13rem] w-[10rem]">
