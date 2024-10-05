@@ -3,8 +3,9 @@ import { Radio, RadioGroup } from "@headlessui/react";
 import { Box, Button, Grid, LinearProgress, Rating } from "@mui/material";
 import "./ProductDetails.scss";
 import ProductReviewCard from "./ProductReviewCard";
-import {mens_kurta} from '../../../Data/menA.js'
-import HomeSectionCard from '../HomeSectionCard/HomeSectionCard.jsx'
+import { mens_kurta } from "../../../Data/menA.js";
+import HomeSectionCard from "../HomeSectionCard/HomeSectionCard.jsx";
+import { useNavigate } from "react-router-dom";
 
 const product = {
   name: "Basic Tee 6-Pack",
@@ -16,19 +17,19 @@ const product = {
   ],
   images: [
     {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-secondary-product-shot.jpg",
+      src: "https://rukminim1.flixcart.com/image/612/612/l5h2xe80/kurta/x/6/n/xl-kast-tile-green-majestic-man-original-imagg4z33hu4kzpv.jpeg?q=70",
       alt: "Two each of gray, white, and black shirts laying flat.",
     },
     {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-01.jpg",
+      src: "https://rukminim1.flixcart.com/image/612/612/l5h2xe80/kurta/x/6/n/xl-kast-tile-green-majestic-man-original-imagg4z33hu4kzpv.jpeg?q=70",
       alt: "Model wearing plain black basic tee.",
     },
     {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-02.jpg",
+      src: "https://rukminim1.flixcart.com/image/612/612/l5h2xe80/kurta/x/6/n/xl-kast-tile-green-majestic-man-original-imagg4z33hu4kzpv.jpeg?q=70",
       alt: "Model wearing plain gray basic tee.",
     },
     {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-featured-product-shot.jpg",
+      src: "https://rukminim1.flixcart.com/image/612/612/l5h2xe80/kurta/x/6/n/xl-kast-tile-green-majestic-man-original-imagg4z33hu4kzpv.jpeg?q=70",
       alt: "Model wearing plain white basic tee.",
     },
   ],
@@ -58,15 +59,17 @@ const product = {
   details:
     'The 6-Pack includes two black, two white, and two heather gray Basic Tees. Sign up for our subscription service and be the first to get new, exciting colors, like our upcoming "Charcoal Gray" limited release.',
 };
-const reviews = { href: "#", average: 4, totalCount: 117 };
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function ProductDetails() {
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
   const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
+  const navigate = useNavigate()
+  const handleAddToCart = ()=>{
+    navigate('/cart')
+  }
 
   return (
     <div className="bg-white">
@@ -113,25 +116,30 @@ export default function ProductDetails() {
         <section className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-2 p-5">
           {/* Image gallery */}
           <div className="flex flex-col items-center">
-            <div className="overflow-hidden rounded-lg w-[30rem] max-h-[35rem]">
+            <div className="overflow-hidden rounded-lg w-[25rem] h-[35rem]">
               <img
                 alt={product.images[0].alt}
                 src={product.images[0].src}
                 className="h-full w-full object-cover object-center"
               />
             </div>
-            <div className="flex mt-5 w-[30rem] mx-auto justify-between">
-              {product.images.map((item, index) => {
-                return (
-                  <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg w-[7rem] h-[7rem] cursor-pointer" key={index}>
-                    <img
-                      alt={item.alt}
-                      src={item.src}
-                      className="h-full w-full object-cover object-center"
-                    />
-                  </div>
-                );
-              })}
+            <div className="w-full items-center">
+              <div className="flex mt-5 w-[30rem] justify-between mx-auto items-start">
+                {product.images.map((item, index) => {
+                  return (
+                    <div
+                      className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg w-[5rem] h-[5rem] cursor-pointer"
+                      key={index}
+                    >
+                      <img
+                        alt={item.alt}
+                        src={item.src}
+                        className="h-full w-full object-cover object-center"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
           {/* Product info */}
@@ -223,6 +231,7 @@ export default function ProductDetails() {
               </fieldset>
             </div>
             <Button
+            onClick={handleAddToCart}
               variant="contained"
               sx={{ px: "2rem", bgcolor: "#9155fd", mt: "2rem" }}
             >
@@ -248,7 +257,7 @@ export default function ProductDetails() {
               <Grid lg={6} md={12} item>
                 <div>
                   {[2, 3, 5, 6].map((item, index) => (
-                    <ProductReviewCard key={index}/>
+                    <ProductReviewCard key={index} />
                   ))}
                 </div>
               </Grid>
@@ -271,7 +280,7 @@ export default function ProductDetails() {
                     rowSpacing={1}
                     sx={{ paddingLeft: 3, paddingTop: 2 }}
                   >
-                    <Grid item  md={12}justifyContent={"center"}>
+                    <Grid item md={12} justifyContent={"center"}>
                       <div className="flex space-x-5">
                         <p className="text-[0.8rem] opacity-60 min-w-16">
                           Excellent
@@ -284,10 +293,10 @@ export default function ProductDetails() {
                             sx={{
                               height: 5,
                               width: {
-                                lg:"15rem",
+                                lg: "15rem",
                                 md: "30rem",
-                                sm:"20rem",
-                                xs:"10rem"
+                                sm: "20rem",
+                                xs: "10rem",
                               },
                               borderRadius: "1rem",
                             }}
@@ -309,10 +318,10 @@ export default function ProductDetails() {
                             sx={{
                               height: 5,
                               width: {
-                                lg:"15rem",
+                                lg: "15rem",
                                 md: "30rem",
-                                sm:"20rem",
-                                xs:"10rem"
+                                sm: "20rem",
+                                xs: "10rem",
                               },
                               borderRadius: "1rem",
                             }}
@@ -334,10 +343,10 @@ export default function ProductDetails() {
                             sx={{
                               height: 5,
                               width: {
-                                lg:"15rem",
+                                lg: "15rem",
                                 md: "30rem",
-                                sm:"20rem",
-                                xs:"10rem"
+                                sm: "20rem",
+                                xs: "10rem",
                               },
                               borderRadius: "1rem",
                             }}
@@ -359,10 +368,10 @@ export default function ProductDetails() {
                             sx={{
                               height: 5,
                               width: {
-                                lg:"15rem",
+                                lg: "15rem",
                                 md: "30rem",
-                                sm:"20rem",
-                                xs:"10rem"
+                                sm: "20rem",
+                                xs: "10rem",
                               },
                               borderRadius: "1rem",
                             }}
@@ -384,10 +393,10 @@ export default function ProductDetails() {
                             sx={{
                               height: 5,
                               width: {
-                                lg:"15rem",
+                                lg: "15rem",
                                 md: "30rem",
-                                sm:"20rem",
-                                xs:"10rem"
+                                sm: "20rem",
+                                xs: "10rem",
                               },
                               borderRadius: "1rem",
                             }}
@@ -405,13 +414,16 @@ export default function ProductDetails() {
 
         {/* similar products */}
         <section className="mt-20">
-        <h1 className="font-semibold text-lg pb-4 text-left pl-24">Similar product</h1>
+          <h1 className="font-semibold text-lg pb-4 text-left pl-24">
+            Similar product
+          </h1>
           <div className="flex flex-wrap px-20 mx-auto gap-y-5">
-            {
-              mens_kurta.map((item, index)=>{
-                return <HomeSectionCard product={item} key={index}/>
-              })
-            }
+            {mens_kurta.map((item, index) => {
+              {
+                console.log(item);
+              }
+              return <HomeSectionCard product={item} key={index} />;
+            })}
           </div>
         </section>
       </div>

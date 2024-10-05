@@ -1,7 +1,12 @@
 import { Button } from "@mui/material";
 import CartItem from "./CartItem.jsx";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
+  const navigate = useNavigate()
+  const handleCheckoutClick = ()=>{
+    navigate('/checkout?step=2')
+  }
   return (
     <div className="xl:grid grid-cols-3">
       <div className="xl:col-span-2 space-y-3 xl:pr-10 xl:pl-24 col-span-3">
@@ -35,7 +40,7 @@ const Cart = () => {
           </div>
           <br />
           <div>
-            <Button variant="contained" className="w-full" sx={{bgcolor: "#9155fd"}}>Checkout</Button>
+            <Button onClick={handleCheckoutClick} variant="contained" className="w-full" sx={{bgcolor: "#9155fd"}}>Checkout</Button>
           </div>
         </div>
       </div>
