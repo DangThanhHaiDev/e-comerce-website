@@ -1,4 +1,4 @@
-package com.HaiDang.response;
+package com.HaiDang.request;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -7,8 +7,7 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Builder
-public class AuthResponse {
-    String token;
-    String message;
+public class LoginRequest {
+    String email;
+    String password;
 }
