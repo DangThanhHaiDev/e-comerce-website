@@ -27,6 +27,8 @@ public class AuthService {
     JwtProvider jwtProvider;
     @Autowired
     UserDetailsServiceImplement userDetailsService;
+    @Autowired
+    CartService cartService;
     public ResponseEntity<AuthResponse> createUserHandler(AuthRequest authRequest) throws UserException {
         if(userRepository.findByEmail(authRequest.getEmail()) != null){
             throw new UserException("Email already existed with another User");
@@ -44,6 +46,7 @@ public class AuthService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(email, password);
         String token = jwtProvider.generateToken(authentication);
         String message = "Signup success!";
+        cartService.createCart(user);
         AuthResponse authResponse = AuthResponse.builder()
                 .token(token)
                 .message(message)
@@ -57,7 +60,7 @@ public class AuthService {
         String token = jwtProvider.generateToken(authentication);
         String message = "Signin success!";
         AuthResponse authResponse = AuthResponse.builder()
-                .token(passwordEncoder.encode(token))
+                .token(token)
                 .message(message)
                 .build();
         return new ResponseEntity<AuthResponse>(authResponse, HttpStatus.CREATED);

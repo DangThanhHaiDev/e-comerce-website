@@ -23,7 +23,7 @@ public class AppConfig {
                 .csrf(csrf -> csrf.disable())
                 .formLogin(loginSecurity -> {})
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/**").permitAll()
+                        .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll())
                 .httpBasic(httpSecurityHttpBasicConfigurer -> {})
                 .cors(corsSecurity -> corsSecurity.configurationSource(new CorsConfigurationSource() {
@@ -38,8 +38,8 @@ public class AppConfig {
                         corsConfiguration.setMaxAge(3600L);
                         return corsConfiguration;
                     }
-                }));
-//                .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class);
+                }))
+                .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class);
         return httpSecurity.build();
     }
     @Bean

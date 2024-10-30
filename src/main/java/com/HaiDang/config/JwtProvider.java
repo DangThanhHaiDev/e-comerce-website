@@ -16,7 +16,7 @@ public class JwtProvider {
         String jwt = Jwts.builder()
                 .claim("email", authentication.getName())
                 .issuedAt(new Date())
-                .expiration(new Date(new Date().getTime()+100000))
+                .expiration(new Date(new Date().getTime()+10000000))
                 .signWith(secretKey)
                 .compact();
         return jwt;

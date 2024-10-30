@@ -1,9 +1,8 @@
 package com.HaiDang.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
@@ -13,7 +12,8 @@ import java.util.List;
 import java.util.Set;
 
 @Data
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 public class Product {
@@ -23,6 +23,7 @@ public class Product {
     String title;
     String description;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "category_id")
     Category category;
     LocalDateTime createdAt;
@@ -42,5 +43,4 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Review> reviews = new ArrayList<>();
     int numRatings;
-
 }
