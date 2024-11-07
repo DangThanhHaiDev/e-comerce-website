@@ -64,7 +64,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function ProductDetails() {
+export default function ProductDetails({}) {
   const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
   const navigate = useNavigate()
   const handleAddToCart = ()=>{

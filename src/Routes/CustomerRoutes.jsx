@@ -17,6 +17,8 @@ const CustomerRoutes = () => {
       </div>
       <div className="mt-10">
         <Routes>
+          <Route path="/login" element={<HomePage />}></Route>
+          <Route path="/register" element={<HomePage/>}></Route>
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/cart" element={<Cart />}></Route>
           <Route path="/:laveOne/:laveTwo/:laveTwo" element={<Product />}></Route>

@@ -1,20 +1,6 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/aspect-ratio'),
-    ],
-  }
-  ```
-*/
-"use client";
 
-import { Fragment, useState } from "react";
+
+import { Fragment, useEffect, useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -38,6 +24,9 @@ import {
 import { navigation } from "./navigationData";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Button, Menu, MenuItem } from "@mui/material";
+import AuthModal from "../../Auth/AuthModal";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserByToken, logout_user } from "../../../State/Auth/Action";
 
 export default function Example() {
   const [open, setOpen] = useState(false);
@@ -45,13 +34,36 @@ export default function Example() {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
+  const [openModal, setOpenModal] = useState(false)
+  const token = localStorage.getItem("token")
+  const dispatch = useDispatch()
+  const auth = useSelector(state => state.auth)
+
+  useEffect(() => {
+    if (token) {
+      dispatch(getUserByToken(token))
+    }
+  }, [auth.token])
+
+  useEffect(() => {
+    handleClose()
+  }, [auth.user])
+
+  const handleLogout = ()=>{
+    dispatch(logout_user())
+  }
+
+  const handleOnClose = () => {
+    setOpenModal(false)
+  }
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+    setOpenModal(true)
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const handleMyOrder = ()=>{
+  const handleMyOrder = () => {
     navigate('/account/order')
     handleClose()
   }
@@ -346,21 +358,33 @@ export default function Example() {
                     aria-expanded={openMenu ? "true" : undefined}
                     onClick={handleClick}
                   >
-                    <Avatar sx={{fontSize:"0.8rem", bgcolor:"#9155fd"}}>Hai</Avatar>
+                    {
+                      auth.user ?
+                        <Avatar sx={{ fontSize: "1.2rem", bgcolor: "#9155fd" }}>{auth.user.firstName[0]}</Avatar>
+                        :
+                        'LOGIN'
+                    }
                   </Button>
-                  <Menu
-                    id="basic-menu"
-                    anchorEl={anchorEl}
-                    open={openMenu}
-                    onClose={handleClose}
-                    MenuListProps={{
-                      "aria-labelledby": "basic-button",
-                    }}
-                  >
-                    <MenuItem>Profile</MenuItem>
-                    <MenuItem onClick={handleMyOrder}>My Orders</MenuItem>
-                    <MenuItem >Logout</MenuItem>
-                  </Menu>
+                  {
+                    auth.user ?
+                      (
+                        <Menu
+                          id="basic-menu"
+                          anchorEl={anchorEl}
+                          open={openMenu}
+                          onClose={handleClose}
+                          MenuListProps={{
+                            "aria-labelledby": "basic-button",
+                          }}
+                        >
+                          <MenuItem>Profile</MenuItem>
+                          <MenuItem onClick={handleMyOrder}>My Orders</MenuItem>
+                          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                        </Menu>
+                      )
+                      :
+                      ''
+                  }
                 </div>
 
                 {/* Search */}
@@ -390,6 +414,11 @@ export default function Example() {
               </div>
             </div>
           </div>
+          {
+            !auth.user ?
+              <AuthModal open={openModal} handleClose={handleOnClose} />
+              : ''
+          }
         </nav>
       </header>
     </div>
