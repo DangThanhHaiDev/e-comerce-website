@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -31,7 +31,10 @@ import {
   RadioGroup,
 } from "@mui/material";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { findProducts } from "../../../State/Product/Action";
+import { store } from "../../../State/store";
 
 
 function classNames(...classes) {
@@ -42,6 +45,38 @@ export default function Product() {
   const location = useLocation();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const navigate = useNavigate();
+  const param = useParams()
+  const decodeQueryString = decodeURIComponent(location.search)
+  const searchParams = new URLSearchParams(decodeQueryString)
+  const colors = searchParams.get("color")
+  const sizes = searchParams.get("size")
+  const price = searchParams.get("price")
+  const discount = searchParams.get("discount")
+  const sort = searchParams.get("sort")
+  const pageNumber = searchParams.get("page") || 1
+  const stock = searchParams.get("stock")
+  const dispatch = useDispatch()
+  const products = useSelector(store => store.product.products?.productList)
+  
+  
+
+
+  useEffect(() => {
+    const [minPrice, maxPrice] = price ? price.split('_').map(Number) : [0, 0]
+    const reqData = {
+      colors,
+      sizes,
+      category: param.laveThree,
+      minPrice,
+      maxPrice,
+      minDiscount: discount || 1,
+      sort: sort || 'price_low',
+      stock: stock,
+      pageNumber,
+      pageSize: 1
+    }
+    dispatch(findProducts(reqData))
+  }, [param.laveThree, colors, sizes, price, discount, sort, pageNumber, stock, sort])
 
   const handleFilter = (sectionId, value) => {
     let seachParam = new URLSearchParams(location.search);
@@ -61,11 +96,11 @@ export default function Product() {
     navigate({ search: `${query}` });
   };
 
-  const handleRadioFilter = (sectionId, value)=>{
+  const handleRadioFilter = (sectionId, value) => {
     let searchParam = new URLSearchParams(location.search)
     searchParam.set(sectionId, value)
     let query = searchParam.toString()
-    navigate({search: `?${query}`})
+    navigate({ search: `?${query}` })
   }
 
   return (
@@ -158,7 +193,7 @@ export default function Product() {
                                 </div>
                               ) : (
                                 <FormControlLabel
-                                onChange={(e)=>handleRadioFilter(section.id, e.target.value)}
+                                  onChange={(e) => handleRadioFilter(section.id, e.target.value)}
                                   value={option.value}
                                   control={<Radio />}
                                   label={option.label}
@@ -310,7 +345,7 @@ export default function Product() {
                                 </div>
                               ) : (
                                 <FormControlLabel
-                                onChange={(e)=>handleRadioFilter(section.id, e.target.value)}
+                                  onChange={(e) => handleRadioFilter(section.id, e.target.value)}
                                   value={option.value}
                                   control={<Radio />}
                                   label={option.label}
@@ -328,9 +363,13 @@ export default function Product() {
               {/* Product grid */}
               <div className="lg:col-span-3">
                 <div className="flex flex-wrap justify-between py-5">
-                  {mens_kurta.map((item, index) => {
-                    return <ProductCard product={item} key={index} />;
-                  })}
+                  {
+                    products ?
+                      products.map((item, index) => {
+                        return <ProductCard product={item} key={index} />;
+                      })
+                      :
+                      ''}
                 </div>
               </div>
             </div>

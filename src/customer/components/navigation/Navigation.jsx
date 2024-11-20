@@ -50,6 +50,7 @@ export default function Example() {
   }, [auth.user])
 
   const handleLogout = ()=>{
+    navigate('/login')
     dispatch(logout_user())
   }
 
@@ -75,7 +76,7 @@ export default function Example() {
   const handleOpen = () => {
     setOpen(true);
   };
-
+  
   return (
     <div className="bg-white z-50">
       {/* Mobile menu */}
@@ -359,8 +360,9 @@ export default function Example() {
                     onClick={handleClick}
                   >
                     {
-                      auth.user ?
-                        <Avatar sx={{ fontSize: "1.2rem", bgcolor: "#9155fd" }}>{auth.user.firstName[0]}</Avatar>
+                      
+                       auth.user ? 
+                        <Avatar sx={{ fontSize: "1.2rem", bgcolor: "#9155fd" }}>{auth.user.firstName}</Avatar>
                         :
                         'LOGIN'
                     }

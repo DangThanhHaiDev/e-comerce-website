@@ -30,15 +30,17 @@ export const register = (useData) => async(dispatch)=>{
 
 export const getUserByToken = (token)=> async(dispatch)=>{
     dispatch(getUser_request())
-    try {
+    try {        
         const response = await axios.get(`${API_BASE_URL}/api/users/profile`,{
             headers: {
                 "Authorization": `Bearer ${token}`
             }
         })
-        const user = response.data        
+        const user = response.data     
+           
         dispatch(getUser_success(user))
-    } catch (error) {
+        
+    } catch (error) {        
         dispatch(getUser_failure(error))
     }
 }
@@ -53,10 +55,8 @@ export const login = (useData)=> async(dispatch)=>{
             
         }
         dispatch(login_success(user))
-        console.log(user);
         
     } catch (error) {
-        console.log("err");
         
         dispatch(login_failure(error))
     }
