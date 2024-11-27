@@ -50,14 +50,15 @@ export const login = (useData)=> async(dispatch)=>{
     try {
         const response = await axios.post(`${API_BASE_URL}/auth/signin`, useData)
         const user = response.data
+        console.log(`${API_BASE_URL}/auth/signin`);
+        
         if(user.token){
             localStorage.setItem("token", user.token)
             
         }
         dispatch(login_success(user))
         
-    } catch (error) {
-        
+    } catch (error) {        
         dispatch(login_failure(error))
     }
 }

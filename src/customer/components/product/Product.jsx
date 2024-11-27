@@ -27,14 +27,15 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
+  Pagination,
   Radio,
   RadioGroup,
+  Slide,
 } from "@mui/material";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { findProducts } from "../../../State/Product/Action";
-import { store } from "../../../State/store";
 
 
 function classNames(...classes) {
@@ -57,18 +58,21 @@ export default function Product() {
   const stock = searchParams.get("stock")
   const dispatch = useDispatch()
   const products = useSelector(store => store.product.products?.productList)
-  
-  
+  const user = useSelector(store => store.auth.user)
+  const totalPage = useSelector(store => store.product.products?.totalPages)
+  const [page, setPage] = useState(1)
+  const [checked, setChecked] = useState(false)
 
+  
 
   useEffect(() => {
     const [minPrice, maxPrice] = price ? price.split('_').map(Number) : [0, 0]
     const reqData = {
-      colors,
+      color: colors,
       sizes,
       category: param.laveThree,
-      minPrice,
-      maxPrice,
+      minPrice: minPrice,
+      maxPrice: maxPrice,
       minDiscount: discount || 1,
       sort: sort || 'price_low',
       stock: stock,
@@ -76,7 +80,16 @@ export default function Product() {
       pageSize: 1
     }
     dispatch(findProducts(reqData))
-  }, [param.laveThree, colors, sizes, price, discount, sort, pageNumber, stock, sort])
+  }, [param.laveThree, colors, sizes, price, discount, sort, pageNumber, stock, sort, dispatch, user])
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage)
+    setChecked(true)
+    const searchParam = new URLSearchParams(location.search)
+    searchParam.set("page", newPage)
+    const query = searchParam.toString()
+    navigate({ search: `${query}` })
+  }
 
   const handleFilter = (sectionId, value) => {
     let seachParam = new URLSearchParams(location.search);
@@ -362,16 +375,24 @@ export default function Product() {
 
               {/* Product grid */}
               <div className="lg:col-span-3">
-                <div className="flex flex-wrap justify-between py-5">
-                  {
-                    products ?
-                      products.map((item, index) => {
-                        return <ProductCard product={item} key={index} />;
-                      })
-                      :
-                      ''}
+                  <div className="flex flex-wrap justify-between py-5">
+                    {
+                      products ?
+                        products.map((item, index) => {
+                          return <ProductCard product={item} key={index} />;
+                        })
+                        :
+                        ''}
+                  </div>
+
+                <div className="flex justify-center items-center">
+
+                  <Pagination page={page} count={totalPage} onChange={handleChangePage} color="secondary" />
+
                 </div>
+
               </div>
+
             </div>
           </section>
         </main>

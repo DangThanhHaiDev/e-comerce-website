@@ -15,7 +15,7 @@ export const cartProducer = (state = initialState, action) => {
         case UPDATE_CART_ITEM_REQUEST:
             return { ...state, isLoading: true, error: null }
         case ADD_ITEM_TO_CART_SUCCESS:
-            return { ...state, isLoading: false, cartItems: [...state.cartItems, action.payload] }
+            return { ...state, isLoading: false, cartItems: action.payload}
         case ADD_ITEM_TO_CART_FAILURE:
         case GET_CART_FAILURE:
         case REMOVE_CART_FAILURE:
@@ -24,14 +24,15 @@ export const cartProducer = (state = initialState, action) => {
         case GET_CART_SUCCESS:
             return { ...state, cart: action.payload }
         case REMOVE_CART_SUCCESS:
+            
             return {
                 ...state,
-                cartItems: state.cartItems.filter((item) => item.id != action.payload),
+                cartItems: action.payload,
                 isLoading: false
             }
         case UPDATE_CART_ITEM_SUCCESS:
             return {
-                ...state, cartItems: state.cartItems.map((item) => action.payload === item.id ? action.payload : item),
+                ...state, cartItems: action.payload,
                 isLoading: false
             }
         default: return state;

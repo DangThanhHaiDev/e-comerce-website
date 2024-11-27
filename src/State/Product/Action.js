@@ -13,12 +13,11 @@ const findProudctsRequest = (products)=>({type: FIND_PRODUCT_REQUEST, payload: p
 
 export const findProducts = (reqData) => async (dispatch) => {
     dispatch(findProudctsRequest())
-    const { colors, sizes, minPrice, maxPrice, minDiscount, category, stock, sort, pageNumber, pageSize } = reqData
+    const { color, sizes, minPrice, maxPrice, minDiscount, category, stock, sort, pageNumber, pageSize } = reqData
     try {
 
-        const response = await api.get(`/api/products?pageNumber=0&pageSize=8`)
+        const response = await api.get(`/api/products?pageNumber=${pageNumber-1}&pageSize=6&category=${category}&color=${color}&size=${sizes}&minPrice=${minPrice}&maxPrice=${maxPrice}`)
         const { data } = response
-
         dispatch(findProudctsSuccess(data))
 
     } catch (error) {
@@ -27,11 +26,14 @@ export const findProducts = (reqData) => async (dispatch) => {
 }
 
 export const findProduct = (reqData) => async (dispatch) => {
+    
     dispatch(findProductRequest())
     const { productId } = reqData
+
     try {
         const response = await api.get(`/api/products/id/${productId}`)
         const product = response.data
+                
         dispatch(findProductSuccess(product))
     } catch (error) {
         dispatch(findProductFailure(error.message))

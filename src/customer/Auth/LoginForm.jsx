@@ -14,7 +14,6 @@ const LoginForm = () => {
             password: data.get("password")
         }
         dispatch(login(useData))
-
     }
     return (
         <form action="" onSubmit={(event) => handleSubmit(event)} >

@@ -4,7 +4,7 @@ import './ProductCard.scss'
 const ProductCard = ({product})=>{
     const navigate = useNavigate()
     const handleProductCardClick = ()=>{
-        navigate(`/product/${4}`)
+        navigate(`/product/${product.id}`)
     }
     return(
         <div onClick={()=>handleProductCardClick()}

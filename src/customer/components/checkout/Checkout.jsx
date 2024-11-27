@@ -11,23 +11,42 @@ import { Button } from "@mui/material";
 const steps = ["Login", "Delevery Address", "Order Summary", "Payment"];
 
 export default function Checkout() {
-  const location = useLocation();
   const navigate = useNavigate();
 
-  // Lấy thông tin query string từ URL
+  const location = useLocation();
   const querySearch = new URLSearchParams(location.search);
 
-  // Đặt giá trị mặc định cho bước hiện tại từ query string
   const [activeStep, setActiveStep] = React.useState(() => {
-    return querySearch.get("step") ? +querySearch.get("step") : 1;
+    // Lấy giá trị 'step' từ query string, nếu không có thì mặc định là 2
+    return querySearch.get("step") ? +querySearch.get("step") : 2;
   });
+
+
+
+  // React.useEffect(()=>{
+    
+  //   if(querySearch.get("step")){
+  //     setActiveStep(querySearch.get("step"))
+  //   }
+  // }, [location.pathname])
+  // Lấy thông tin query string từ URL
+
+  // Đặt giá trị mặc định cho bước hiện tại từ query string
 
   // Cập nhật query string mỗi khi activeStep thay đổi
   React.useEffect(() => {
     // Trực tiếp sửa đổi URLSearchParams
     querySearch.set("step", activeStep);
     navigate({ search: `?${querySearch.toString()}` }, { replace: true });  // Cập nhật URL
-  }, [activeStep, navigate]);
+  }, [activeStep]);
+  React.useEffect(()=>{
+    
+    if(querySearch.get("step")){
+      if(querySearch.get("step")){
+        setActiveStep(+querySearch.get("step"))
+      }
+    }
+  },[location.search])
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -69,5 +88,6 @@ export default function Checkout() {
         </Button>
       </Box>
     </div>
+    
   );
 }

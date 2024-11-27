@@ -7,7 +7,7 @@ const initialState = {
 }
 
 export const orderReducer = (state = initialState, action) => {
-    switch (action.payload) {
+    switch (action.type) {
         case CREATE_ORDER_REQUEST:
         case GET_ORDER_REQUEST:
             return { ...state, isLoading: true, error: null }

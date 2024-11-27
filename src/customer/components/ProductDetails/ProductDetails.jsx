@@ -1,75 +1,46 @@
-import { useState } from "react";
-import { Radio, RadioGroup } from "@headlessui/react";
+import { useEffect, useState } from "react";
+import { Label, Radio, RadioGroup } from "@headlessui/react";
 import { Box, Button, Grid, LinearProgress, Rating } from "@mui/material";
 import "./ProductDetails.scss";
 import ProductReviewCard from "./ProductReviewCard";
 import { mens_kurta } from "../../../Data/menA.js";
 import HomeSectionCard from "../HomeSectionCard/HomeSectionCard.jsx";
-import { useNavigate } from "react-router-dom";
-
-const product = {
-  name: "Basic Tee 6-Pack",
-  price: "$192",
-  href: "#",
-  breadcrumbs: [
-    { id: 1, name: "Men", href: "#" },
-    { id: 2, name: "Clothing", href: "#" },
-  ],
-  images: [
-    {
-      src: "https://rukminim1.flixcart.com/image/612/612/l5h2xe80/kurta/x/6/n/xl-kast-tile-green-majestic-man-original-imagg4z33hu4kzpv.jpeg?q=70",
-      alt: "Two each of gray, white, and black shirts laying flat.",
-    },
-    {
-      src: "https://rukminim1.flixcart.com/image/612/612/l5h2xe80/kurta/x/6/n/xl-kast-tile-green-majestic-man-original-imagg4z33hu4kzpv.jpeg?q=70",
-      alt: "Model wearing plain black basic tee.",
-    },
-    {
-      src: "https://rukminim1.flixcart.com/image/612/612/l5h2xe80/kurta/x/6/n/xl-kast-tile-green-majestic-man-original-imagg4z33hu4kzpv.jpeg?q=70",
-      alt: "Model wearing plain gray basic tee.",
-    },
-    {
-      src: "https://rukminim1.flixcart.com/image/612/612/l5h2xe80/kurta/x/6/n/xl-kast-tile-green-majestic-man-original-imagg4z33hu4kzpv.jpeg?q=70",
-      alt: "Model wearing plain white basic tee.",
-    },
-  ],
-  colors: [
-    { name: "White", class: "bg-white", selectedClass: "ring-gray-400" },
-    { name: "Gray", class: "bg-gray-200", selectedClass: "ring-gray-400" },
-    { name: "Black", class: "bg-gray-900", selectedClass: "ring-gray-900" },
-  ],
-  sizes: [
-    { name: "XXS", inStock: false },
-    { name: "XS", inStock: true },
-    { name: "S", inStock: true },
-    { name: "M", inStock: true },
-    { name: "L", inStock: true },
-    { name: "XL", inStock: true },
-    { name: "2XL", inStock: true },
-    { name: "3XL", inStock: true },
-  ],
-  description:
-    'The Basic Tee 6-Pack allows you to fully express your vibrant personality with three grayscale options. Feeling adventurous? Put on a heather gray tee. Want to be a trendsetter? Try our exclusive colorway: "Black". Need to add an extra pop of color to your outfit? Our white tee has you covered.',
-  highlights: [
-    "Hand cut and sewn locally",
-    "Dyed with our proprietary colors",
-    "Pre-washed & pre-shrunk",
-    "Ultra-soft 100% cotton",
-  ],
-  details:
-    'The 6-Pack includes two black, two white, and two heather gray Basic Tees. Sign up for our subscription service and be the first to get new, exciting colors, like our upcoming "Charcoal Gray" limited release.',
-};
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { findProduct } from "../../../State/Product/Action.js";
+import { addCartItemToCart } from "../../../State/Cart/Action.js";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function ProductDetails({}) {
-  const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
+export default function ProductDetails() {
   const navigate = useNavigate()
-  const handleAddToCart = ()=>{
+  const dispatch = useDispatch()
+  const { productId } = useParams()
+  const productDetails = useSelector(store => store.product.product)
+  const [selectedSize, setSelectedSize] = useState("");
+  const handleAddToCart = () => {
+    dispatch(addCartItemToCart({productId: productDetails?.id, size: selectedSize, quantity: productDetails?.quantity, price: productDetails?.price}))
     navigate('/cart')
   }
+  useEffect(() => {
+    dispatch(findProduct({ productId }))
+  }, [productId])
+  useEffect(() => {
+    if(productDetails?.size)
+      setSelectedSize(productDetails?.size[0]?.name)
+  }, [productDetails])
+  useEffect(()=>{
+
+  }, [selectedSize])
+
+  const handleChangeSize = (e)=>{
+    setSelectedSize(e)
+    
+  }
+  
+  
 
   return (
     <div className="bg-white">
@@ -79,7 +50,7 @@ export default function ProductDetails({}) {
             role="list"
             className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
           >
-            {product.breadcrumbs.map((breadcrumb) => (
+            {/* {product.breadcrumbs.map((breadcrumb) => (
               <li key={breadcrumb.id}>
                 <div className="flex items-center">
                   <a
@@ -100,14 +71,14 @@ export default function ProductDetails({}) {
                   </svg>
                 </div>
               </li>
-            ))}
+            ))} */}
             <li className="text-sm">
               <a
-                href={product.href}
+                // href={productDetails?.imageUrl}
                 aria-current="page"
                 className="font-medium text-gray-500 hover:text-gray-600"
               >
-                {product.name}
+                {productDetails?.brand}
               </a>
             </li>
           </ol>
@@ -118,12 +89,13 @@ export default function ProductDetails({}) {
           <div className="flex flex-col items-center">
             <div className="overflow-hidden rounded-lg w-[25rem] h-[35rem]">
               <img
-                alt={product.images[0].alt}
-                src={product.images[0].src}
+                alt="Ảnh đã thay đổi url"
+                src={productDetails?.imageUrl
+                }
                 className="h-full w-full object-cover object-center"
               />
             </div>
-            <div className="w-full items-center">
+            {/* <div className="w-full items-center">
               <div className="flex mt-5 w-[30rem] justify-between mx-auto items-start">
                 {product.images.map((item, index) => {
                   return (
@@ -140,24 +112,24 @@ export default function ProductDetails({}) {
                   );
                 })}
               </div>
-            </div>
+            </div> */}
           </div>
           {/* Product info */}
           <div className="flex flex-col place-items-start max-w-[30rem]">
             <div className="">
-              <p className="text-md font-semibold">Universaloutfit</p>
+              <p className="text-md font-semibold">{productDetails?.title}</p>
             </div>
             <div className="mt-1">
               <p className="text-md text-gray-600">
-                Casual Puff Sleeves Solid Women White top
+                {productDetails?.description}
               </p>
             </div>
             <div className="flex mt-4 space-x-4">
               <div>
-                <p>199$</p>
+                <p>{productDetails?.price}</p>
               </div>
               <div className="line-through">
-                <p>299$</p>
+                <p>{productDetails?.discountedPrice}</p>
               </div>
               <div>
                 <p className="text-red-600">5% Off</p>
@@ -168,10 +140,10 @@ export default function ProductDetails({}) {
                 <Rating name="read-only" value={5.5} readOnly />
               </div>
               <div>
-                <p className="opacity-60 ">42086 Ratings</p>
+                <p className="opacity-60 ">{productDetails?.ratings}</p>
               </div>
               <div>
-                <p className="text-purple-700">117 Reviews</p>
+                <p className="text-purple-700">{productDetails?.numRatings}</p>
               </div>
             </div>
 
@@ -183,55 +155,53 @@ export default function ProductDetails({}) {
               <fieldset aria-label="Choose a size" className="mt-4">
                 <RadioGroup
                   value={selectedSize}
-                  onChange={setSelectedSize}
+                  onChange={e => handleChangeSize(e)}
                   className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4"
                 >
-                  {product.sizes.map((size) => (
-                    <Radio
-                      key={size.name}
-                      value={size}
-                      disabled={!size.inStock}
-                      className={classNames(
-                        size.inStock
-                          ? "cursor-pointer bg-white text-gray-900 shadow-sm"
-                          : "cursor-not-allowed bg-gray-50 text-gray-200",
-                        "group relative flex items-center justify-center rounded-md border px-4 py-3 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none data-[focus]:ring-2 data-[focus]:ring-indigo-500 sm:flex-1 sm:py-6"
-                      )}
-                    >
-                      <span>{size.name}</span>
-                      {size.inStock ? (
-                        <span
-                          aria-hidden="true"
-                          className="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent group-data-[focus]:border group-data-[checked]:border-indigo-500"
-                        />
-                      ) : (
-                        <span
-                          aria-hidden="true"
-                          className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
-                        >
-                          <svg
-                            stroke="currentColor"
-                            viewBox="0 0 100 100"
-                            preserveAspectRatio="none"
-                            className="absolute inset-0 h-full w-full stroke-2 text-gray-200"
+                  {
+                    productDetails?.size.map(s => (
+                      <Radio
+                        key={s.name}
+                        value={s.name}
+                        disabled={!s.quantity>0}
+                        className={classNames(
+                          s.quantity > 0
+                            ? 'cursor-pointer bg-white text-gray-900 shadow-sm'
+                            : 'cursor-not-allowed bg-gray-50 text-gray-200',
+                          'group relative flex items-center justify-center rounded-md border px-4 py-3 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none data-[focus]:ring-2 data-[focus]:ring-indigo-500 sm:flex-1 sm:py-6',
+                        )}
+                      >
+                        <span>{s.name}</span>
+                        {s.quantity > 0 ? (
+                          <span
+                            aria-hidden="true"
+                            className="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent group-data-[focus]:border group-data-[checked]:border-indigo-500"
+                          />
+                        ) : (
+                          <span
+                            aria-hidden="true"
+                            className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
                           >
-                            <line
-                              x1={0}
-                              x2={100}
-                              y1={100}
-                              y2={0}
-                              vectorEffect="non-scaling-stroke"
-                            />
-                          </svg>
-                        </span>
-                      )}
-                    </Radio>
-                  ))}
+                            <svg
+                              stroke="currentColor"
+                              viewBox="0 0 100 100"
+                              preserveAspectRatio="none"
+                              className="absolute inset-0 size-full stroke-2 text-gray-200"
+                            >
+                              <line x1={0} x2={100} y1={100} y2={0} vectorEffect="non-scaling-stroke" />
+                            </svg>
+                          </span>
+                        )}
+                      </Radio>
+
+                    ))
+                  }
+
                 </RadioGroup>
               </fieldset>
             </div>
             <Button
-            onClick={handleAddToCart}
+              onClick={handleAddToCart}
               variant="contained"
               sx={{ px: "2rem", bgcolor: "#9155fd", mt: "2rem" }}
             >
@@ -239,9 +209,7 @@ export default function ProductDetails({}) {
             </Button>
             <div className="description-product mt-[2rem] px-5 py-10">
               <p className="text-left">
-                A tradiction garment embodying elegance and grace. Crafted from
-                fine fabrics, it features intricate embroidery and a relaxed
-                fit, providing comfort and style
+                {productDetails?.description}
               </p>
             </div>
           </div>
@@ -420,7 +388,6 @@ export default function ProductDetails({}) {
           <div className="flex flex-wrap px-20 mx-auto gap-y-5">
             {mens_kurta.map((item, index) => {
               {
-                console.log(item);
               }
               return <HomeSectionCard product={item} key={index} />;
             })}
@@ -428,5 +395,6 @@ export default function ProductDetails({}) {
         </section>
       </div>
     </div>
+
   );
 }

@@ -27,9 +27,10 @@ export const filters = [
     id: "price",
     name: "Price",
     options: [
+      { value: "1_30", label: "1_300$", checked: false },
       { value: "1_300", label: "100-300$", checked: false },
       { value: "3_600", label: "300-600$", checked: false },
-     
+      { value: "300_6000000", label: "300-6000$", checked: false },
     ],
   },
   {

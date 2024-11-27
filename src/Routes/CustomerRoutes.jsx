@@ -8,6 +8,7 @@ import ProductDetails from '../customer/components/ProductDetails/ProductDetails
 import Checkout from '../customer/components/checkout/Checkout.jsx'
 import Order from '../customer/components/Order/Order.jsx'
 import OrderDetails from '../customer/components/Order/OrderDetails.jsx'
+import OrderSummary from "../customer/components/checkout/OrderSummary.jsx";
 
 const CustomerRoutes = () => {
   return (

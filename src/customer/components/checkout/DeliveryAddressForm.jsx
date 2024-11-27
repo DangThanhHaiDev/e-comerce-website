@@ -1,7 +1,16 @@
+import { useDispatch } from "react-redux";
 import AddressCard from "../AddressCard/AddressCard";
 import { Box, Button, Grid, TextField } from "@mui/material";
+import { createOrder } from "../../../State/Order/Action";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const DeleveryAddress = () => {
+  const dispatch = useDispatch()
+  const location = useLocation()
+  const navigate = useNavigate(location.search)
+  const searchParams = new URLSearchParams()
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -11,10 +20,10 @@ const DeleveryAddress = () => {
       streetAddress: data.get("address"),
       city: data.get("city"),
       state: data.get("state"),
-      zip: data.get("zip"),
-      phoneNumber: data.get("phoneNumber"),
+      zipCode: data.get("zip"),
+      mobile: data.get("phoneNumber"),
     };
-    console.log(address);
+    dispatch(createOrder({address, navigate}))
   };
   return (
     <Grid container className="px-20" sx={{ paddingTop: 2 }} columnSpacing={2}>
