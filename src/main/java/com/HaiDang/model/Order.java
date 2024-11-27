@@ -1,5 +1,6 @@
 package com.HaiDang.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -30,6 +31,7 @@ public class Order {
     Address shppingAddress;
 
     @ManyToOne()
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     User user;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)

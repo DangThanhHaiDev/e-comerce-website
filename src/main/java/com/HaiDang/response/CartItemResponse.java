@@ -1,17 +1,12 @@
 package com.HaiDang.response;
 
-import com.HaiDang.model.Product;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
-
-
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductResponse {
-    boolean isSuccess;
+public class CartItemResponse {
     String message;
-    Product product;
+    boolean isSuccess;
 }

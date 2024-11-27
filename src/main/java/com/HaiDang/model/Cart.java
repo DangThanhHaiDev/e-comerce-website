@@ -1,5 +1,6 @@
 package com.HaiDang.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,6 +22,7 @@ public class Cart {
     int totalItem;
     double totalDiscountedPrice;
     double discounted;
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     User user;

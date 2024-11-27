@@ -7,11 +7,10 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
-
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductResponse {
-    boolean isSuccess;
-    String message;
-    Product product;
+public class ProductPageResponse {
+    long totalElements;
+    List<Product> productList;
+    long totalPages;
 }

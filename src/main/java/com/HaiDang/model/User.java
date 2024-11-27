@@ -24,7 +24,7 @@ public class User {
     String role;
     String mobile;
     LocalDateTime createdAt;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Address> addresses = new ArrayList<>();
     @Embedded
     @ElementCollection

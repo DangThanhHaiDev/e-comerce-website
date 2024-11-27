@@ -11,6 +11,9 @@ import com.HaiDang.request.AddItemRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.stream.Collectors;
+
 @Service
 public class CartServiceImpl implements CartService{
     @Autowired
@@ -54,13 +57,14 @@ public class CartServiceImpl implements CartService{
         int totalItem = 0;
 
         for(CartItem cartItem : cart.getCartItems()){
-            totalPrice += cartItem.getPrice();
-            totalDiscountedPrice += cartItem.getDiscountedPrice();
+            totalPrice += cartItem.getPrice() * cartItem.getQuantity();
+            totalDiscountedPrice += cartItem.getDiscountedPrice()*cartItem.getQuantity();
             totalItem += cartItem.getQuantity();
         }
         cart.setTotalPrice(totalPrice);
         cart.setTotalDiscountedPrice(totalDiscountedPrice);
         cart.setTotalItem(totalItem);
+
         return cartRepository.save(cart);
     }
 }

@@ -20,6 +20,7 @@ public class AdminProductController {
     @PostMapping("/")
     public ResponseEntity<Product> createProduct(@RequestBody ProductRequest productRequest){
         Product product = productService.createProduct(productRequest);
+
         return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
     @DeleteMapping("/{productId}/delete")

@@ -59,6 +59,7 @@ public class OrderServiceImpl implements OrderService{
         order.setOrderStatus("PENDING");
         order.getPaymentDetails().setStatus("PENDING");
         order.setShppingAddress(address);
+        order.setUser(user);
         Order newOrder = orderRepository.save(order);
         for (OrderItem oi : orderItems){
             orderItemService.createOrderItem(oi);

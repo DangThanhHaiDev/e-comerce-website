@@ -50,6 +50,7 @@ public class AuthService {
         AuthResponse authResponse = AuthResponse.builder()
                 .token(token)
                 .message(message)
+                .firstName(user.getFirstName())
                 .build();
         return new ResponseEntity<AuthResponse>(authResponse,HttpStatus.CREATED);
     }
@@ -63,6 +64,7 @@ public class AuthService {
                 .token(token)
                 .message(message)
                 .build();
+        System.out.println(authResponse);
         return new ResponseEntity<AuthResponse>(authResponse, HttpStatus.CREATED);
     }
     public Authentication authenticated(String email, String password) throws UserException {

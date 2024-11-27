@@ -1,5 +1,6 @@
 package com.HaiDang.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,9 +35,8 @@ public class Product {
     String brand;
     String color;
     String imageUrl;
-    @Embedded
     @ElementCollection
-    @CollectionTable(name = "Size")
+    @CollectionTable(name = "product_sizes", joinColumns = @JoinColumn(name = "product_id"))
     Set<Size> size = new HashSet<>();
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Rating> ratings = new ArrayList<>();
