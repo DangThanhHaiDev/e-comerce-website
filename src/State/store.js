@@ -5,13 +5,15 @@ import { productReducer } from "./Product/Reducer";
 import { cartProducer } from "./Cart/Reducer";
 import { orderReducer } from "./Order/Reducer";
 import { paymentReducer } from "./Payment/Reducer";
+import { categoryReducer } from "./Category/Reducer";
 
 const rootReducer = combineReducers({
     auth: AuthReducer,
     product: productReducer,
     cart: cartProducer,
     order:orderReducer,
-    payment: paymentReducer
+    payment: paymentReducer,
+    category: categoryReducer
 });
 
 export const store = legacy_createStore(rootReducer, applyMiddleware(thunk));
