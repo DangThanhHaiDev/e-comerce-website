@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
-import { confirmOrder, deliveredOrder, getAllOrders, shipOrder } from "../../State/Admin/Order/Action";
+import { cancelOrder, confirmOrder, deliveredOrder, getAllOrders, shipOrder } from "../../State/Admin/Order/Action";
 import { Avatar, Box, Button, Card, CardHeader, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ConfirmDialog from "./Confirm";
@@ -11,13 +11,14 @@ const OrderTable = () => {
     const order = useSelector(store => store.adminOrder.order)
     const [orderActive, setOrderActive] = useState(-1)
     const [orderStatusActive, setOrderStatusActive] = useState("")
+    const [isCacel, setCancel] = useState(false)
 
 
     const [open, setOpen] = useState(false)
 
     useEffect(() => {
         dispatch(getAllOrders())
-    }, [order])
+    }, [order, isCacel])
 
     const handleOpenConfirm = () => {
         setOpen(true)
@@ -26,12 +27,24 @@ const OrderTable = () => {
         setOpen(false)
     }
     const handleActive = (orderId, status) => {
+        if (status === "SHIPPED" || status === "CANCELED") {
+            return
+        }
         setOrderActive(orderId)
         setOrderStatusActive(status)
         handleOpenConfirm()
     }
-    const handleConfirmed = (orderId, status) => {
-        if (status === "PENDING") {
+    const handleCancel = (orderId)=>{
+        setCancel(true)
+        setOrderActive(orderId)
+        handleOpenConfirm()
+    }
+    const handleConfirmed = (orderId, status, cancel) => {        
+        if(cancel){
+            dispatch(cancelOrder(orderId))
+            setCancel(false)
+        }
+        else if (status === "PENDING") {
             dispatch(confirmOrder(orderId))
 
         }
@@ -58,7 +71,7 @@ const OrderTable = () => {
                                 <TableCell align="center">Price</TableCell>
                                 <TableCell align="center">Status</TableCell>
                                 <TableCell align="center">Next Step</TableCell>
-                                <TableCell align="center">Delete</TableCell>
+                                <TableCell align="center">Cancel</TableCell>
 
 
                             </TableRow>
@@ -94,15 +107,19 @@ const OrderTable = () => {
                                             <p className="rounded-2xl p-2 bg-gray-400">{item.orderStatus}</p>
                                         </TableCell>
                                         <TableCell align="center">
-                                            <Avatar onClick={e => handleActive(item.id, item.orderStatus)} sx={{ backgroundColor: "#9155fd", margin: "auto", cursor: "pointer" }} className="active:opacity-60">
+                                            <Avatar onClick={e => handleActive(item.id, item.orderStatus)} sx={{ backgroundColor: "#9155fd", margin: "auto", cursor: "pointer", opacity: item.orderStatus === "SHIPPED" || item.orderStatus === "CANCELED" ? "0.6" : "1" }} className="active:opacity-60">
                                                 <NavigateNextIcon />
                                             </Avatar>
                                         </TableCell>
-
-
-                                        {/* 
-                                   
-                                    <TableCell align="center">{p.category.name}</TableCell> */}
+                                        <TableCell align="center">
+                                            <Button variant="contained" sx={{
+                                                backgroundColor: "#b71f3b", ":hover": {
+                                                    backgroundColor:"#b71f3b"
+                                                },
+                                            }} disabled={item.orderStatus==="SHIPPED" || item.orderStatus==="CANCELED"} onClick={e=>handleCancel(item.id)}>
+                                                Cancel
+                                            </Button>
+                                        </TableCell>
 
 
                                     </TableRow>
@@ -115,7 +132,7 @@ const OrderTable = () => {
             <Pagination count={products?.totalPages} onChange={(e, newPage)=>handleChangePage(newPage)} color="secondary" />
 
         </div> */}
-            <ConfirmDialog open={open} handleCloseConfirm={handleCloseConfirm} handleConfirmed={handleConfirmed} id={orderActive} status={orderStatusActive} />
+            <ConfirmDialog open={open} handleCloseConfirm={handleCloseConfirm} handleConfirmed={handleConfirmed} id={orderActive} status={orderStatusActive} isCancel={isCacel} />
         </div>
     )
 }

@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function ConfirmDialog({open, handleCloseConfirm, id, handleConfirmed, status}) {
+export default function ConfirmDialog({open, handleCloseConfirm, id, handleConfirmed, status, isCancel}) {
 
   return (
     <React.Fragment>
@@ -26,7 +26,7 @@ export default function ConfirmDialog({open, handleCloseConfirm, id, handleConfi
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseConfirm}>Hủy</Button>
-          <Button onClick={e=>handleConfirmed(id, status)} autoFocus>
+          <Button onClick={e=>handleConfirmed(id, status, isCancel)} autoFocus>
             Xác nhận
           </Button>
         </DialogActions>
