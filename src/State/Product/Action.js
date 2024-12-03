@@ -53,7 +53,7 @@ export const findProduct = (reqData) => async (dispatch) => {
 export const createProduct = (reqData)=>async(dispatch)=>{
     dispatch(createProductRequest())
     try {
-        const response = await api.post("/api/admin/products", reqData)
+        const response = await api.post("/api/admin/products/", reqData)
         const {data} = response
         dispatch(createProductSuccess(data))
         
