@@ -9,6 +9,9 @@ import Checkout from '../customer/components/checkout/Checkout.jsx'
 import Order from '../customer/components/Order/Order.jsx'
 import OrderDetails from '../customer/components/Order/OrderDetails.jsx'
 import OrderSummary from "../customer/components/checkout/OrderSummary.jsx";
+import Profile from "../customer/components/Profile/Profile.jsx";
+import Warning from "../customer/Auth/Warning.jsx";
+import Feedback from "../customer/components/Rating/Rating.jsx";
 
 const CustomerRoutes = () => {
   return (
@@ -28,6 +31,9 @@ const CustomerRoutes = () => {
           <Route path="/checkout" element={<Checkout />}></Route>
           <Route path='/account/order' element={<Order />}></Route>
           <Route path="/account/order/:orderId" element={<OrderDetails />}></Route>
+          <Route path="/profile" element={<Profile />}></Route>
+          <Route path="/warning" element={<Warning />}></Route>
+          <Route path="/rating/:id" element={<Feedback />}></Route>
         </Routes>
       </div>
       <div>

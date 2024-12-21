@@ -3,13 +3,32 @@ import AddressCard from "../AddressCard/AddressCard";
 import { Box, Button, Grid, TextField } from "@mui/material";
 import { createOrder } from "../../../State/Order/Action";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { api } from "../../../config/apiConfig";
 
 const DeleveryAddress = () => {
   const dispatch = useDispatch()
   const location = useLocation()
   const navigate = useNavigate(location.search)
   const searchParams = new URLSearchParams()
+  const [addresses, setAddresses] = useState([])
+
+  useEffect(() => {
+    getAddresses()
+  }, [])
+
+  const getAddresses = async () => {
+    try {
+      const response = await api.get('/api/users/addresses')
+      const { data } = response
+      setAddresses(data)
+      console.log(data);
+      
+
+    } catch (error) {
+
+    }
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,14 +38,24 @@ const DeleveryAddress = () => {
       lastName: data.get("lastName"),
       streetAddress: data.get("address"),
       city: data.get("city"),
-      state: data.get("state"),
-      zipCode: data.get("zip"),
       mobile: data.get("phoneNumber"),
     };
-    dispatch(createOrder({address, navigate}))
+    dispatch(createOrder({ address, navigate }))
   };
+
+  const handleSubmit2 =async(address)=>{
+    try {
+      address.isExist = true
+      const {data} = await api.post(`api/orders/`, address)
+      navigate({search: `step=3&order_id=${data.id}`})
+    } catch (error) {
+      
+    }
+  }
+
   return (
     <Grid container className="px-20" sx={{ paddingTop: 2 }} columnSpacing={2}>
+
       <Grid
         item
         xs={12}
@@ -34,18 +63,29 @@ const DeleveryAddress = () => {
         className="px-5 border overflow-y-scroll rounded-e-md h-[30.5rem] shadow-md"
         sx={{ textAlign: "center" }}
       >
-        <AddressCard />
-        <div className="w-full flex pl-5">
-          <Button
-            sx={{fontSize: "0.8rem", bgcolor: "RGB(145 85 253)" }}
-            size="large"
-            variant="contained"
-            className="pl-5"
-          >
-            Delivery Here
-          </Button>
-        </div>
+        {
+          addresses.length > 0 &&
+          addresses.map((address) => (
+            <div>
+              <AddressCard address={address} />
+              <div className="w-full flex pl-5">
+                <Button
+                  sx={{ fontSize: "0.8rem", bgcolor: "RGB(145 85 253)" }}
+                  size="large"
+                  variant="contained"
+                  className="pl-5"
+                  onClick={()=>handleSubmit2(address)}
+                >
+                  Delivery Here
+                </Button>
+              </div>
+            </div>
+          ))
+
+        }
+
       </Grid>
+
       <Grid item lg={7} xs={12} className="border">
         <Box className="border rounded-s-md shadow-md p-5">
           <form onSubmit={(e) => handleSubmit(e)}>
@@ -96,28 +136,7 @@ const DeleveryAddress = () => {
                   autoComplete="locality"
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  id="state"
-                  className="state"
-                  name="state"
-                  label="State/Province/Region"
-                  required
-                  fullWidth
-                  autoComplete="region"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  id="zip"
-                  className="zip"
-                  name="zip"
-                  label="Zip / Postal code"
-                  required
-                  fullWidth
-                  autoComplete="shipping postal/code"
-                />
-              </Grid>
+
               <Grid item xs={12} sm={6}>
                 <TextField
                   id="phoneNumber"

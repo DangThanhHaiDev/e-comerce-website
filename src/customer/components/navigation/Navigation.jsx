@@ -27,6 +27,9 @@ import { Avatar, Button, Menu, MenuItem } from "@mui/material";
 import AuthModal from "../../Auth/AuthModal";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserByToken, logout_user } from "../../../State/Auth/Action";
+import { getNumberItems } from "../../../State/Cart/Action";
+import { api, API_BASE_URL } from "../../../config/apiConfig";
+import axios from "axios";
 
 export default function Example() {
   const [open, setOpen] = useState(false);
@@ -38,30 +41,66 @@ export default function Example() {
   const token = localStorage.getItem("token")
   const dispatch = useDispatch()
   const auth = useSelector(state => state.auth)
+  const number = useSelector(store => store.cart.number)
+  const [nav, setNav] = useState([])
+
 
   useEffect(() => {
     if (token) {
       dispatch(getUserByToken(token))
     }
-  }, [auth.token])
+
+  }, [token])
+
+  useEffect(() => {
+    if (auth.user)
+    {
+      console.log(auth);
+      
+      dispatch(getNumberItems())
+      console.log("Có làm");
+      
+    }
+  }, [number])
 
   useEffect(() => {
     handleClose()
   }, [auth.user])
 
-  const handleLogout = ()=>{
+  useEffect(() => {
+    getNav()
+  }, [])
+
+  const getNav = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/nav`);
+      const { data } = response
+      // console.log(data);
+      setNav(data.navList)
+
+    } catch (error) {
+      console.log(error.message);
+
+    }
+  }
+
+
+  const handleLogout = () => {
     navigate('/login')
     dispatch(logout_user())
   }
 
-  const handleOnClose = () => {
+  const handleOnClose = (close) => {
+    if (close) {
+      close()
+    }
     setOpenModal(false)
   }
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
     setOpenModal(true)
   };
-  const handleClose = () => {
+  const handleClose = (close) => {
     setAnchorEl(null);
   };
   const handleMyOrder = () => {
@@ -69,14 +108,18 @@ export default function Example() {
     handleClose()
   }
   const handleCategoryClick = (category, section, item) => {
-    navigate(`${category.id}/${section.id}/${item.name}`);
+    navigate(`${category.id}/${section.id}/${item}`);
     setOpen(false);
     setOpenDesktop(false);
   };
   const handleOpen = () => {
     setOpen(true);
   };
-  
+
+  const handleClickBag = () => {
+    navigate("/cart")
+  }
+
   return (
     <div className="bg-white z-50">
       {/* Mobile menu */}
@@ -123,7 +166,7 @@ export default function Example() {
                     className="space-y-10 px-4 pb-8 pt-10"
                   >
                     <div className="grid grid-cols-2 gap-x-4">
-                      {category.featured.map((item) => (
+                      {/* {category.featured.map((item) => (
                         <div key={item.name} className="group relative text-sm">
                           <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
                             <img
@@ -146,7 +189,7 @@ export default function Example() {
                             Shop now
                           </p>
                         </div>
-                      ))}
+                      ))} */}
                     </div>
                     {category.sections.map((section) => (
                       <div key={section.name}>
@@ -242,7 +285,7 @@ export default function Example() {
               {/* Flyout menus */}
               <PopoverGroup className="hidden lg:ml-8 lg:block lg:self-stretch">
                 <div className="flex h-full space-x-8">
-                  {navigation.categories.map((category) => (
+                  {nav.length > 0 && nav.map((category) => (
                     <Popover key={category.name} className="flex">
                       <div className="relative flex">
                         <PopoverButton
@@ -266,7 +309,7 @@ export default function Example() {
                             <div className="mx-auto max-w-7xl px-8">
                               <div className="grid grid-cols-2 gap-x-8 gap-y-10 py-16">
                                 <div className="col-start-2 grid grid-cols-2 gap-x-8">
-                                  {category.featured.map((item) => (
+                                  {/* {category.featured.map((item) => (
                                     <div
                                       key={item.name}
                                       className="group relative text-base sm:text-sm"
@@ -292,9 +335,10 @@ export default function Example() {
                                         Shop now
                                       </p>
                                     </div>
-                                  ))}
+                                  ))} */}
                                 </div>
                                 <div className="row-start-1 grid grid-cols-3 gap-x-8 gap-y-10 text-sm">
+
                                   {category.sections.map((section) => (
                                     <div key={section.name}>
                                       <p
@@ -309,7 +353,7 @@ export default function Example() {
                                         className="mt-6 space-y-6 sm:mt-4 sm:space-y-4"
                                       >
                                         {section.items.map((item) => (
-                                          <li key={item.name} className="flex">
+                                          <li key={item} className="flex">
                                             <p
                                               onClick={() =>
                                                 handleCategoryClick(
@@ -320,7 +364,7 @@ export default function Example() {
                                               }
                                               className="cursor-pointer hover:text-gray-800"
                                             >
-                                              {item.name}
+                                              {item}
                                             </p>
                                           </li>
                                         ))}
@@ -360,8 +404,8 @@ export default function Example() {
                     onClick={handleClick}
                   >
                     {
-                      
-                       auth.user ? 
+
+                      auth.user ?
                         <Avatar sx={{ fontSize: "1.2rem", bgcolor: "#9155fd" }}>{auth.user.firstName}</Avatar>
                         :
                         'LOGIN'
@@ -379,7 +423,7 @@ export default function Example() {
                             "aria-labelledby": "basic-button",
                           }}
                         >
-                          <MenuItem>Profile</MenuItem>
+                          <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
                           <MenuItem onClick={handleMyOrder}>My Orders</MenuItem>
                           <MenuItem onClick={handleLogout}>Logout</MenuItem>
                         </Menu>
@@ -404,11 +448,12 @@ export default function Example() {
                 <div className="ml-4 flow-root lg:ml-6">
                   <a href="#" className="group -m-2 flex items-center p-2">
                     <ShoppingBagIcon
+                      onClick={handleClickBag}
                       aria-hidden="true"
                       className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                     />
                     <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                      0
+                      {number && number}
                     </span>
                     <span className="sr-only">items in cart, view bag</span>
                   </a>

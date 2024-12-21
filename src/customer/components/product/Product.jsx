@@ -53,7 +53,7 @@ export default function Product() {
   const sizes = searchParams.get("size")
   const price = searchParams.get("price")
   const discount = searchParams.get("discount")
-  const sort = searchParams.get("sort")
+  const [sort, setSort] = useState(searchParams.get("sort"))
   const pageNumber = searchParams.get("page") || 1
   const stock = searchParams.get("stock")
   const dispatch = useDispatch()
@@ -63,7 +63,7 @@ export default function Product() {
   const [page, setPage] = useState(1)
   const [checked, setChecked] = useState(false)
 
-  
+
 
   useEffect(() => {
     const [minPrice, maxPrice] = price ? price.split('_').map(Number) : [0, 0]
@@ -77,10 +77,23 @@ export default function Product() {
       sort: sort || 'price_low',
       stock: stock,
       pageNumber,
-      pageSize: 1
+      pageSize: 6,
+      title: ""
     }
     dispatch(findProducts(reqData))
-  }, [param.laveThree, colors, sizes, price, discount, sort, pageNumber, stock, sort, dispatch, user])
+  }, [param.laveThree, colors, sizes, price, discount, sort, pageNumber, stock, sort, dispatch, user, ])
+
+  const hanldeSort = (e) => {
+    e.preventDefault()
+    if(e.target.getAttribute("data-value")==="Price: Low to High"){
+      setSort("price_low");
+    }
+    else if(e.target.getAttribute("data-value")==="Price: High to Low"){
+      setSort("price_high");
+
+    }
+
+  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
@@ -250,6 +263,8 @@ export default function Product() {
                     {sortOptions.map((option) => (
                       <MenuItem key={option.name}>
                         <a
+                          onClick={e => hanldeSort(e)}
+                          data-value={option.name}
                           href={option.href}
                           className={classNames(
                             option.current
@@ -375,15 +390,15 @@ export default function Product() {
 
               {/* Product grid */}
               <div className="lg:col-span-3">
-                  <div className="flex flex-wrap justify-between py-5">
-                    {
-                      products ?
-                        products.map((item, index) => {
-                          return <ProductCard product={item} key={index} />;
-                        })
-                        :
-                        ''}
-                  </div>
+                <div className="flex flex-wrap justify-between py-5">
+                  {
+                    products ?
+                      products.map((item, index) => {
+                        return <ProductCard product={item} key={index} />;
+                      })
+                      :
+                      ''}
+                </div>
 
                 <div className="flex justify-center items-center">
 

@@ -8,7 +8,8 @@ import HomeSectionCard from "../HomeSectionCard/HomeSectionCard.jsx";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { findProduct } from "../../../State/Product/Action.js";
-import { addCartItemToCart } from "../../../State/Cart/Action.js";
+import { addCartItemToCart, getNumberItems } from "../../../State/Cart/Action.js";
+import { api } from "../../../config/apiConfig.js";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -20,12 +21,21 @@ export default function ProductDetails() {
   const { productId } = useParams()
   const productDetails = useSelector(store => store.product.product)
   const [selectedSize, setSelectedSize] = useState("");
+  const params = useParams()
+  const [similarProduct, setSimilarProduct] = useState([])
+
+  
+
   const handleAddToCart = () => {
     dispatch(addCartItemToCart({productId: productDetails?.id, size: selectedSize, quantity: productDetails?.quantity, price: productDetails?.price}))
+    dispatch(getNumberItems())
     navigate('/cart')
   }
   useEffect(() => {
+    
     dispatch(findProduct({ productId }))
+    getSimilarProduct()
+
   }, [productId])
   useEffect(() => {
     if(productDetails?.size)
@@ -39,6 +49,18 @@ export default function ProductDetails() {
     setSelectedSize(e)
     
   }
+
+  const getSimilarProduct = async()=>{
+    try {
+
+      const response = await api.get(`/api/products/similar/${params.productId}`)
+      const {data} = response
+      setSimilarProduct(data)      
+    } catch (error) {
+      
+    }
+  }
+
   
   
 
@@ -126,13 +148,13 @@ export default function ProductDetails() {
             </div>
             <div className="flex mt-4 space-x-4">
               <div>
-                <p>{productDetails?.price}</p>
+                <p>{productDetails?.discountedPrice && Number(productDetails.discountedPrice).toLocaleString("vi-VN")}đ</p>
               </div>
               <div className="line-through">
-                <p>{productDetails?.discountedPrice}</p>
+                <p>{productDetails?.price && Number(productDetails.price).toLocaleString("vi-VN")}</p>
               </div>
               <div>
-                <p className="text-red-600">5% Off</p>
+                <p className="text-red-600">{productDetails?.discountPresent}% Off</p>
               </div>
             </div>
             <div className="flex mt-4 space-x-4 text-sm">
@@ -140,10 +162,10 @@ export default function ProductDetails() {
                 <Rating name="read-only" value={5.5} readOnly />
               </div>
               <div>
-                <p className="opacity-60 ">{productDetails?.ratings}</p>
+                {/* <p className="opacity-60 ">{productDetails?.ratings}</p> */}
               </div>
               <div>
-                <p className="text-purple-700">{productDetails?.numRatings}</p>
+                {/* <p className="text-purple-700">{productDetails?.numRatings}</p> */}
               </div>
             </div>
 
@@ -209,7 +231,7 @@ export default function ProductDetails() {
             </Button>
             <div className="description-product mt-[2rem] px-5 py-10">
               <p className="text-left">
-                {productDetails?.description}
+                Seller: Đặng Thành Hải Shop
               </p>
             </div>
           </div>
@@ -224,8 +246,9 @@ export default function ProductDetails() {
             <Grid container spacing={7} sx={{ padding: 0 }}>
               <Grid lg={6} md={12} item>
                 <div>
-                  {[2, 3, 5, 6].map((item, index) => (
-                    <ProductReviewCard key={index} />
+
+                  { productDetails?.ratings.length > 0 && productDetails.ratings.map((item, index) => (
+                    <ProductReviewCard key={index} review={productDetails.reviews[index]} rating={item.rating} />
                   ))}
                 </div>
               </Grid>
@@ -239,7 +262,7 @@ export default function ProductDetails() {
                       readOnly
                       sx={{ fontSize: "1.3rem" }}
                     />
-                    <p className="text-sm opacity-60">54890 Ratings</p>
+                    <p className="text-sm opacity-60">{productDetails?.ratings?.length} Đánh giá</p>
                   </div>
                 </Grid>
                 <Box>
@@ -383,12 +406,11 @@ export default function ProductDetails() {
         {/* similar products */}
         <section className="mt-20">
           <h1 className="font-semibold text-lg pb-4 text-left pl-24">
-            Similar product
+            Sản phẩm cùng loại
           </h1>
           <div className="flex flex-wrap px-20 mx-auto gap-y-5">
-            {mens_kurta.map((item, index) => {
-              {
-              }
+            {similarProduct.length > 0 && similarProduct.map((item, index) => {
+            
               return <HomeSectionCard product={item} key={index} />;
             })}
           </div>

@@ -4,6 +4,7 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import SettingsCellIcon from '@mui/icons-material/SettingsCell';
 import { Avatar, Box, Card, CardContent, CardHeader, Grid, IconButton, Typography } from "@mui/material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useNavigate } from "react-router-dom";
 
 const salesData = [
     {
@@ -20,7 +21,7 @@ const salesData = [
     },
     {
         stats: '1.54K',
-        title: "Products",
+        title: "Best Products",
         color: "#D63031",
         icon: <SettingsCellIcon sx={{ fontSize: "1.75rem" }} />
     },
@@ -32,33 +33,50 @@ const salesData = [
     }
 ]
 
-const renderStats = () => {
-    return salesData.map((item, index) => (
-        <Grid item xs={12} sm={3} key={index} sx={{display:"flex", justifyContent:"center", alignItems:"center", justifyContent:"start"}}>
-            <Box>
-                <Avatar sx={{ mr: 3, width: 44, height: 44, boxShadow: 3, color: "white", background: `${item.color}` }}>{item.icon}</Avatar>
-            </Box>
-            <Box>
-                <Typography variant="caption">{item.title}</Typography>
-                <Typography variant="h6">{item.stats}</Typography>
-            </Box>
-        </Grid>
-    ))
-}
+
+
 
 const MonthlyOverview = () => {
+    const navigate = useNavigate()
+
+    const handleTopProduct = (title)=>{
+
+        if(title === "Best Products"){
+            navigate("/admin/products/seller")
+        }
+    }
+    
+
+    const renderStats = () => {
+        return salesData.map((item, index) => (
+            <Grid item xs={12} sm={3} key={item.title} sx={{ display: "flex", justifyContent: "center", alignItems: "center", justifyContent: "start" }}>
+                <Box>
+                    <div onClick={()=>handleTopProduct(item.title)}>
+                        <Avatar sx={{ mr: 3, width: 44, height: 44, boxShadow: 3, color: "white", background: `${item.color}` }}>{item.icon}</Avatar>
+    
+                    </div>
+                </Box>
+                <Box>
+                    <Typography variant="caption">{item.title}</Typography>
+                    <Typography variant="h6">{item.stats}</Typography>
+                </Box>
+            </Grid>
+        ))
+    }
+
+
     return (
         <div>
-            <Card className="text-left" sx={{bgcolor:"#2C3335", color:"white"}}>
+            <Card className="text-left" sx={{ bgcolor: "#2C3335", color: "white" }}>
                 <CardHeader title="Monthly Overview" action={<IconButton size="small">
                     <MoreVertIcon />
                 </IconButton>}
                     subheader={
                         <Typography variant="body2">
-                            <Box component="span" sx={{ fontWeight: 600, color: "text.primary", bgcolor:"#2C3335", color:"white" }}>
+                            <Box component="span" sx={{ fontWeight: 600, color: "text.primary", bgcolor: "#2C3335", color: "white" }}>
                                 Total 48.5% groth
                             </Box>
-                             this month
+                            this month
                         </Typography>
                     }
                     titleTypographyProps={{
@@ -69,8 +87,8 @@ const MonthlyOverview = () => {
                         }
                     }}
                 />
-                <CardContent sx={{pt:theme=>`${theme.spacing(3)} !important`}}>
-                    <Grid container spacing={[5,0]} sx={{padding:0}}>
+                <CardContent sx={{ pt: theme => `${theme.spacing(3)} !important` }}>
+                    <Grid container spacing={[5, 0]} sx={{ padding: 0 }}>
                         {renderStats()}
                     </Grid>
                 </CardContent>

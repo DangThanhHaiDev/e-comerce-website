@@ -1,5 +1,5 @@
 import { api } from "../../../config/apiConfig"
-import { CANCEL_ORDER_FAILURE, CANCEL_ORDER_REQUEST, CANCEL_ORDER_SUCCESS, COMFIRM_ORDER_FAOLURE, COMFIRM_ORDER_REQUEST, COMFIRM_ORDER_SUCCESS, DELETE_ORDER_FAILURE, DELETE_ORDER_REQUEST, DELETE_ORDER_SUCCESS, DELIVERED_ORDER_FAILURE, DELIVERED_ORDER_REQUEST, DELIVERED_ORDER_SUCCESS, GET_ORDER_FAILURE, GET_ORDER_REQUEST, GET_ORDER_SUCCESS, SHIP_ORDER_FAILURE, SHIP_ORDER_REQUEST, SHIP_ORDER_SUCCESS } from "./ActionType"
+import { CANCEL_ORDER_FAILURE, CANCEL_ORDER_REQUEST, CANCEL_ORDER_SUCCESS, COMFIRM_ORDER_FAOLURE, COMFIRM_ORDER_REQUEST, COMFIRM_ORDER_SUCCESS, DELETE_ORDER_FAILURE, DELETE_ORDER_REQUEST, DELETE_ORDER_SUCCESS, DELIVERED_ORDER_FAILURE, DELIVERED_ORDER_REQUEST, DELIVERED_ORDER_SUCCESS, GET_ORDER_BY_DATE_FAILURE, GET_ORDER_BY_DATE_REQUEST, GET_ORDER_BY_DATE_SUCCESS, GET_ORDER_FAILURE, GET_ORDER_REQUEST, GET_ORDER_SUCCESS, SHIP_ORDER_FAILURE, SHIP_ORDER_REQUEST, SHIP_ORDER_SUCCESS } from "./ActionType"
 
 export const getAllOrders = ()=>async(dispatch)=>{
     dispatch({type: GET_ORDER_REQUEST})
@@ -64,5 +64,17 @@ export const cancelOrder = (orderId)=>async(dispatch)=>{
         dispatch({type: CANCEL_ORDER_SUCCESS, payload: data})
     } catch (error) {
         dispatch({type: CANCEL_ORDER_FAILURE, payload: error.message})
+    }
+}
+
+export const getOrdersByDate = (reqData)=>async(dispatch)=>{
+    dispatch({type: GET_ORDER_BY_DATE_REQUEST})
+    try {
+        const response = await api.get(`/api/admin/orders/all?startDate=${reqData.startDate}&endDate=${reqData.endDate}`)
+        const {data} = response
+        dispatch({type: GET_ORDER_BY_DATE_SUCCESS, payload: data})
+        
+    } catch (error) {
+        dispatch({type: GET_ORDER_BY_DATE_FAILURE, payload: error.message})
     }
 }

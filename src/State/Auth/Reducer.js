@@ -27,6 +27,7 @@ export const AuthReducer = (state = initialState, action) => {
             case LOGIN_SUCCESS:
                 return {
                     ...state,
+                    user:action.payload,
                     token: action.payload
                 }
 
@@ -36,11 +37,12 @@ export const AuthReducer = (state = initialState, action) => {
             return {
                 ...state,
                 error: action.payload,
-                isLoading: false
+                isLoading: false,
+                user: null
             }
         case LOGOUT:
             return{
-                initialState
+                ...initialState
             } 
         default: return state
     }

@@ -2,7 +2,7 @@ import { Button, IconButton } from "@mui/material";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { useDispatch } from "react-redux";
-import { getUserCart, removeCartItem, UpdateCartItem } from "../../../State/Cart/Action";
+import { getNumberItems, getUserCart, removeCartItem, UpdateCartItem } from "../../../State/Cart/Action";
 import { useEffect } from "react";
 
 const CartItem = ({product}) => {
@@ -17,14 +17,16 @@ const CartItem = ({product}) => {
     dispatch(UpdateCartItem({...product, quantity: product.quantity-1}))
   }
   
-  const handleAdd = ()=>{    
+  const handleAdd = ()=>{        
     dispatch(UpdateCartItem({...product, quantity: product.quantity+1}))
   }
 
   const handleDelItem = ()=>{
     dispatch(removeCartItem(product))
+    dispatch(getNumberItems())
   }
 
+  
   return (
     <div className=" shadow-lg rounded-md border-t-2 p-3">
       <div className="flex">
@@ -42,9 +44,10 @@ const CartItem = ({product}) => {
           <p className="opacity-60 text-sm">Size: {product?.size}</p>
           <p className="opacity-60 text-sm">Seller: Dang Thanh Hai</p>
           <div className="flex space-x-3 mt-2 text-sm">
-            <p className="font-semibold">{product?.price.toLocaleString("vi-VN")}đ</p>
-            <p className="line-through opacity-80">{product?.discountedPrice}</p>
-            <p className="text-red-600 font-semibold">83% off</p>
+            <p className="font-semibold">{product?.discountedPrice.toLocaleString("vi-VN")}đ</p>
+            <p className="line-through opacity-80">{product?.price}</p>
+            <p className="text-red-600 font-semibold">{product.product.discountPresent
+            }% off</p>
           </div>
         </div>
       </div>

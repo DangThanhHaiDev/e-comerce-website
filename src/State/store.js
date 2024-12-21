@@ -15,7 +15,7 @@ const rootReducer = combineReducers({
     order:orderReducer,
     payment: paymentReducer,
     category: categoryReducer,
-    adminOrder: adminOrderReducer
+    adminOrder: adminOrderReducer,
 });
 
 export const store = legacy_createStore(rootReducer, applyMiddleware(thunk));

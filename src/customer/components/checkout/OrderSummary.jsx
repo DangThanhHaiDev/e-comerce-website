@@ -12,6 +12,8 @@ const OrderSummary = () => {
   const location = useLocation()
   const order = useSelector(store => store.order)
   const checkout = useSelector(store => store.payment)  
+  console.log(order);
+  
   useEffect(() => {
     
     const searchParams = new URLSearchParams(location.search)
@@ -20,7 +22,6 @@ const OrderSummary = () => {
 
   useEffect(()=>{
     if(checkout?.data?.data?.paymentUrl){
-      console.log(checkout.data.data.paymentUrl);
       
         window.location.href = checkout.data.data.paymentUrl
     }
@@ -59,7 +60,7 @@ const OrderSummary = () => {
             </div>
             <div className="flex justify-between opacity-80">
               <p>Discount</p>
-              <p className="text-red-700 opacity-80">{order.order ? Number(order.order.discounted).toLocaleString("vi-VN") : ""}</p>
+              <p className="text-red-700 opacity-80">{order.order ? (Number(order.order.totalPrice) - Number(order.order.discountedPrice)).toLocaleString("vi-VN") : ""}</p>
             </div>
             <div className="flex justify-between opacity-80">
               <p>Delivery Charge</p>
@@ -68,7 +69,8 @@ const OrderSummary = () => {
             <hr />
             <div className="flex justify-between opacity-100 font-bold">
               <p>Total Amount</p>
-              <p className="text-red-900">{order.order ? (Number(order.order.totalPrice) - Number(order.order.discounted)).toLocaleString("vi-VN") : ""}</p>
+              <p className="text-red-700 opacity-80">{order.order ? Number(order.order.discountedPrice).toLocaleString("vi-VN") : ""}</p>
+
             </div>
             <br />
             <div>

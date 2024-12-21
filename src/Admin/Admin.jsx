@@ -1,6 +1,6 @@
 import { CssBaseline, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, useMediaQuery, useTheme } from "@mui/material"
 import { Box } from "@mui/system"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Route, Routes, useNavigate } from "react-router-dom"
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
@@ -13,24 +13,48 @@ import OrderTable from "./components/OrderTable";
 import Dashboard from "./components/Dashboard";
 import CustomerTable from "./components/CustomerTable";
 import ProductsTable from "../Admin/components/ProductsTable";
+import ChecklistIcon from '@mui/icons-material/Checklist';
+import CreateProductTypeForm from "./components/CreateProductTypeForm";
+import AccountManager from "./components/AccountManager";
+import CreateAccount from "./components/CreateAccount";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserByToken } from "../State/Auth/Action";
+import TopProduct from "./components/TopProduct";
 
-const menu = [
+let menu = [
     { name: "Dashboard", path: "/admin", icon: <DashboardIcon /> },
     { name: "Products", path: "/admin/products", icon: <ProductionQuantityLimitsIcon /> },
     { name: "Customers", path: "/admin/customers", icon: <Person2Icon /> },
     { name: "Orders", path: "/admin/orders", icon: <LibraryBooksIcon /> },
-    { name: "AddProduct", path: "/admin/product/create", icon: <AddIcon /> }
+    { name: "Add Product", path: "/admin/product/create", icon: <AddIcon /> },
+    { name: "Add Product Type", path: "/admin/productType/create", icon: <ChecklistIcon /> },
+    { name: "Account Manager", path: "/admin/account", icon: <AccountCircleIcon /> }
+
 ]
 
 const Admin = () => {
-    const theme = useTheme()
-    const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"))
-    const [slideBarVisible, setSlideVisible] = useState(false)
+
     const navigate = useNavigate()
+    const user = useSelector(store => store.auth.user)
+    const dispatch = useDispatch()
+    const token = localStorage.getItem("token")
 
     const handleClickIcon = (path) => {
         navigate(path)
     }
+
+    useEffect(() => {
+        if (token) {
+            dispatch(getUserByToken(token))
+        }
+    }, [])
+
+    if (user && user.role === "nhanvien") {        
+        menu = menu.filter((item) => (item.name !== "Dashboard" && item.name != "Customers" && item.name != "Account Manager"))
+    }
+   
+
+
 
     const drawer = (
         <Box sx={{
@@ -71,26 +95,36 @@ const Admin = () => {
 
     return (
         <div>
-            <div className="flex h-[100vh] w-full">
-                <CssBaseline />
-                <div className="w-[15%] border-r-gray-300 h-full ">
-                    <div className="h-full fixed border w-[15%]">
-                    {drawer}
-                        
-                    </div>
+            {
+                user?.role && user.role !== "customer" ?
+                    (
+                        <div className="flex h-[100vh] w-full">
+                            <CssBaseline />
+                            <div className="w-[15%] border-r-gray-300 h-full ">
+                                <div className="h-full fixed border w-[15%]">
+                                    {drawer}
 
-                </div>
-                <div className="w-[84%]">
-                    <Routes>
-                        <Route path="/" element={<Dashboard />} />
-                        <Route path="/product/create" element={<CreateProductForm />} />
-                        <Route path="/products" element={<ProductsTable />} />
-                        <Route path="/orders" element={<OrderTable />} />
-                        <Route path="/customers" element={<CustomerTable />} />
-                    </Routes>
-                </div>
+                                </div>
 
-            </div>
+                            </div>
+                            <div className="w-[84%]">
+                                <Routes>
+                                    <Route path="/" element={<Dashboard />} />
+                                    <Route path="/product/create" element={<CreateProductForm />} />
+                                    <Route path="/products" element={<ProductsTable />} />
+                                    <Route path="/orders" element={<OrderTable />} />
+                                    <Route path="/customers" element={<CustomerTable />} />
+                                    <Route path="/productType/create" element={<CreateProductTypeForm />} />
+                                    <Route path="/account" element={<AccountManager />}></Route>
+                                    <Route path="/account/create" element={<CreateAccount />}></Route>
+                                    <Route path="/products/seller" element={<TopProduct />}></Route>
+                                </Routes>
+                            </div>
+
+                        </div>
+                    ) : ""
+            }
+
 
 
         </div>

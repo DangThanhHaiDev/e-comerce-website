@@ -1,5 +1,5 @@
 import { api } from "../../config/apiConfig"
-import { ADD_ITEM_TO_CART_FAILURE, ADD_ITEM_TO_CART_REQUEST, ADD_ITEM_TO_CART_SUCCESS, GET_CART_FAILURE, GET_CART_REQUEST, GET_CART_SUCCESS, REMOVE_CART_FAILURE, REMOVE_CART_REQUEST, REMOVE_CART_SUCCESS, UPDATE_CART_ITEM_FAILURE, UPDATE_CART_ITEM_REQUEST, UPDATE_CART_ITEM_SUCCESS } from "./ActionType"
+import { ADD_ITEM_TO_CART_FAILURE, ADD_ITEM_TO_CART_REQUEST, ADD_ITEM_TO_CART_SUCCESS, GET_CART_FAILURE, GET_CART_REQUEST, GET_CART_SUCCESS, GET_NUMBER_ITEMS_FAILURE, GET_NUMBER_ITEMS_REQUEST, GET_NUMBER_ITEMS_SUCCESS, REMOVE_CART_FAILURE, REMOVE_CART_REQUEST, REMOVE_CART_SUCCESS, UPDATE_CART_ITEM_FAILURE, UPDATE_CART_ITEM_REQUEST, UPDATE_CART_ITEM_SUCCESS } from "./ActionType"
 
 const addCartItemRequest = ()=>({type: ADD_ITEM_TO_CART_REQUEST})
 const addCartItemSuccess = (data)=>({type: ADD_ITEM_TO_CART_SUCCESS, payload: data})
@@ -26,6 +26,7 @@ export const addCartItemToCart = (reqData) =>async(dispatch)=>{
 }
 
 export const getUserCart = () => async(dispatch)=>{
+    
     dispatch(getCartRequest())
     try {
         const response = await api.get("api/cart/")
@@ -49,11 +50,23 @@ export const removeCartItem = (reqData)=>async(dispatch)=>{
 export const UpdateCartItem = (reqData)=> async(dispatch)=>{
     
     dispatch(updateCartItemRequest())
-    try {
-        const  {data} = await api.put(`api/cart_item/${reqData.id}`, reqData)
-        
+    try {        
+        const  {data} = await api.put(`/api/cart_item/${reqData.id}`, reqData)
         dispatch(updateCartItemSuccess(data))
     } catch (error) {
         dispatch(updateCartItemFailure(error.message))
     }
+}
+
+
+export const getNumberItems = ()=>async(dispatch)=>{
+    dispatch({type: GET_NUMBER_ITEMS_REQUEST})
+    try {
+        const response = await api.get("/api/cart/number_item")
+        const {data} =response
+        dispatch({type: GET_NUMBER_ITEMS_SUCCESS, payload: data})
+    } catch (error) {
+        dispatch({type: GET_NUMBER_ITEMS_FAILURE, payload: error.message})
+    }
+
 }

@@ -1,4 +1,4 @@
-import { CREATE_ORDER_FAILURE, CREATE_ORDER_REQUEST, CREATE_ORDER_SUCCESS, GET_ORDER_FAILURE, GET_ORDER_REQUEST, GET_ORDER_SUCCESS } from "./ActionType";
+import { CREATE_ORDER_FAILURE, CREATE_ORDER_REQUEST, CREATE_ORDER_SUCCESS, GET_ALL_ORDER_FAILURE, GET_ALL_ORDER_REQUEST, GET_ALL_ORDER_SUCCESS, GET_ORDER_FAILURE, GET_ORDER_REQUEST, GET_ORDER_SUCCESS } from "./ActionType";
 import { api } from "../../config/apiConfig";
 
 const createOrderRequest = ()=>({type: CREATE_ORDER_REQUEST})
@@ -12,7 +12,7 @@ const getOrderFailure = (err)=>({type: GET_ORDER_FAILURE, payload: err})
 export const createOrder = (reqData)=>async(dispatch)=>{
     dispatch(createOrderRequest())
     try {
-        const {data} = await api.post(`api/orders/`, reqData.address)
+        const {data} = await api.post(`api/orders/`, {...reqData.address, isExist:false})
         
         dispatch(createOrderSuccess(data))
 
@@ -32,5 +32,37 @@ export const getOrderById = (orderId)=>async(dispatch)=>{
         dispatch(getOrderSuccess(data))     
     } catch (error) {
         dispatch(getOrderFailure(error.message))
+    }
+}
+
+export const getAllOrderByUser = (reqData)=>async(dispatch)=>{
+    dispatch({type: GET_ALL_ORDER_REQUEST})    
+    try {
+        
+        const response = await api.get(`/api/orders/user`)
+        const {data} = response
+        console.log(data);
+        
+        dispatch({type: GET_ALL_ORDER_SUCCESS, payload: data})
+    } catch (error) {
+        console.log("Có lỗi");
+        
+        dispatch({type:GET_ALL_ORDER_FAILURE, payload: error.message})
+    }
+}
+
+export const getAllOrderByFilter = (filter)=>async(dispatch)=>{
+    dispatch({type: GET_ALL_ORDER_REQUEST})    
+    try {
+        
+        const response = await api.get(`/api/orders/status?status=${filter}`)
+        const { data } = response
+        // console.log(data);
+        
+        dispatch({type: GET_ALL_ORDER_SUCCESS, payload: data})
+    } catch (error) {
+        console.log("Có lỗi");
+        
+        dispatch({type:GET_ALL_ORDER_FAILURE, payload: error.message})
     }
 }
