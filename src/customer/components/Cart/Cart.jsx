@@ -21,6 +21,10 @@ const Cart = () => {
 
 
   const handleCheckoutClick = () => {
+    if(item?.length<=0){
+      alert("Bạn vui lòng thêm món hàng vào trong giỏ hàng trước khi mua")
+      return
+    }
     navigate('/checkout?step=2')
   }
 
@@ -66,7 +70,7 @@ const Cart = () => {
             </div>
             <br />
             <div>
-              <Button onClick={handleCheckoutClick} variant="contained" className="w-full" sx={{ bgcolor: "#9155fd" }}>Checkout</Button>
+              <Button onClick={handleCheckoutClick} variant="contained" className="w-full" sx={{ bgcolor: "#9155fd" }}>Mua hàng</Button>
             </div>
           </div>
         </div>

@@ -4,12 +4,11 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrderByFilter, getAllOrderByUser } from "../../../State/Order/Action";
 import { useLocation, useNavigate } from "react-router-dom";
-import { api } from "../../../config/apiConfig";
 
 const orderStatus = [
   { label: "Chờ xác nhận", value: "PENDING" },
   { label: "Đang giao", value: "DELIVERED" },
-  { label: "Đã hủy", value: "CANCALED" },
+  { label: "Đã hủy", value: "CANCELED" },
   { label: "Đã giao", value: "SHIPPED" },
 ];
 const Order = () => {
@@ -59,6 +58,9 @@ const Order = () => {
   }, [user])
   
  
+  const prop = ()=>{
+    dispatch(getAllOrderByUser())
+  }
 
   return (
     <div className="px-5 lg:px-20">
@@ -89,7 +91,7 @@ const Order = () => {
             orders &&
             orders.map((item) => (
               <div key={item.id} className="border-gray-900">
-                {item.orderItems.map((i) => (<OrderCard key={i.id} order={i} orderId={item.id} status={item.orderStatus} />))}
+                {item.orderItems.map((i) => (<OrderCard reload={prop} key={i.id} order={i} orderId={item.id} status={item.orderStatus} />))}
               </div>
             ))
           }

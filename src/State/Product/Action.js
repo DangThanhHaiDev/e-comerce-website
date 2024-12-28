@@ -21,16 +21,19 @@ const deleteProductFailure = (err) => ({ type: DELTE_PRODUCT_FAILURE, payload: e
 const token = localStorage.getItem("token")
 
 
+// category: categoryAcive,
 
 
 export const findProducts = (reqData) => async (dispatch) => {
     dispatch(findProudctsRequest())
-    const { color, sizes, minPrice, maxPrice, minDiscount, category, stock, sort, pageNumber, pageSize, title } = reqData
+    const { color, sizes, minPrice, maxPrice, minDiscount, category, stock, sort, pageNumber, pageSize, title, lv1, lv2 } = reqData
     try {
-
-        const response = await api.get(`/api/products?pageNumber=${pageNumber - 1}&pageSize=6&category=${category}&color=${color}&size=${sizes}&minPrice=${minPrice}&maxPrice=${maxPrice}&sort=${sort}&title=${title}`)
+        console.log(category);
+                
+        const response = await api.get(`/api/products?pageNumber=${pageNumber - 1}&pageSize=6&category=${category}&color=${color}&size=${sizes}&minPrice=${minPrice}&maxPrice=${maxPrice}&sort=${sort}&title=${title}&lv1=${lv1}&lv2=${lv2}&minDiscount=${minDiscount}`)
         const { data } = response
-
+        console.log(data);
+        
         dispatch(findProudctsSuccess(data))
 
     } catch (error) {

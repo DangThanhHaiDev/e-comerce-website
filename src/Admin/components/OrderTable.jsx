@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import { cancelOrder, confirmOrder, deliveredOrder, getAllOrders, getOrdersByDate, shipOrder } from "../../State/Admin/Order/Action";
-import { Avatar, Box, Button, Card, CardHeader, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Avatar, Box, Button, Card, CardHeader, FormControl, FormControlLabel, FormLabel, Pagination, Paper, Radio, RadioGroup, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ConfirmDialog from "./Confirm";
 import { format } from "date-fns";
@@ -10,8 +10,18 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import SearchIcon from '@mui/icons-material/Search';
+import { useLocation, useNavigate } from "react-router-dom";
+import { getAllOrderByFilter, getAllOrderByUser } from "../../State/Order/Action";
 
 
+const orderStatus = [
+    { label: "Chờ xác nhận", value: "PENDING" },
+    { label: "Chờ lệnh giao", value: "CONFIRMED" },
+    { label: "Đang giao", value: "DELIVERED" },
+    { label: "Đã hủy", value: "CANCELED" },
+    { label: "Đã giao", value: "SHIPPED" },
+
+];
 
 
 const OrderTable = () => {
@@ -21,15 +31,29 @@ const OrderTable = () => {
     const [orderActive, setOrderActive] = useState(-1)
     const [orderStatusActive, setOrderStatusActive] = useState("")
     const [isCacel, setCancel] = useState(false)
+    const [filter, setFilter] = useState([])
+    const navigate = useNavigate()
+    const location = useLocation()
 
-    console.log(orders);
+
+
 
     const [open, setOpen] = useState(false)
     const [startDate, setStartDay] = useState(dayjs(new Date()))
     const [endDate, setEndDate] = useState(dayjs(new Date()).add(5, 'day'))
+    const checkboxesRef = useRef([]);
 
     useEffect(() => {
-        dispatch(getAllOrders())
+        if (filter.length <= 0) {
+            dispatch(getAllOrders(["Hai"]))
+        }
+        else {
+            dispatch(getAllOrders(filter))
+        }
+    }, [filter])
+
+    useEffect(() => {
+        dispatch(getAllOrders(["Hai"]))
     }, [order, isCacel])
 
     const handleOpenConfirm = () => {
@@ -69,14 +93,49 @@ const OrderTable = () => {
         handleCloseConfirm()
     }
 
+
+
+    const handleOnChangeFilter = (value) => {
+        let searchParams = new URLSearchParams(location.search)
+        let search = searchParams.getAll("filter")
+        if (search.length > 0 && search.join("").includes(value)) {
+            search = search[0].split(",").filter((item) => { return item !== value })
+
+            if (search.length === 0) {
+                searchParams.delete("filter")
+            }
+            else {
+                searchParams.set("filter", search.join(","))
+            }
+
+        }
+        else {
+            search.push(value)
+            searchParams.set("filter", search.join(","))
+        }
+        setFilter(search)
+        const query = searchParams.toString()
+        navigate({ search: `${query}` })
+
+    }
+
     const handleFilterByDate = () => {
         const formattedStartDate = startDate.format('YYYY-MM-DD');
         const formattedEndDate = endDate.format('YYYY-MM-DD');
         dispatch(getOrdersByDate({ startDate: formattedStartDate, endDate: formattedEndDate }))
     }
     const handleGetAll = () => {
-        dispatch(getAllOrders())
+        dispatch(getAllOrders(["Hai"]))
+        setFilter([])
+        resetCheckboxes()
     }
+    const resetCheckboxes = () => {
+        checkboxesRef.current.forEach((checkbox) => {
+            checkbox.checked = false;
+        });
+    };
+console.log(orders);
+
     return (
         <div>
             <Card className='mt-2'>
@@ -86,6 +145,22 @@ const OrderTable = () => {
                     <div className="text-left ml-3">
                         <Button onClick={handleGetAll} variant="contained">All orders</Button>
 
+                    </div>
+                    <div>
+                        {orderStatus.map((item, index) => (
+                            <div className="flex items-center" key={item.value}>
+                                <input
+                                    ref={(el) => checkboxesRef.current[index] = el}
+                                    type="checkbox"
+                                    className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                    defaultValue={item.value}
+                                    onChange={e => handleOnChangeFilter(e.target.value)}
+                                />
+                                <label htmlFor={item.value} className="ml-3 text-gray-600">
+                                    {item.label}
+                                </label>
+                            </div>
+                        ))}
                     </div>
                     <div className="flex justify-end items-center">
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -114,7 +189,7 @@ const OrderTable = () => {
                             <TableRow>
                                 <TableCell align="center">Product Images</TableCell>
                                 <TableCell align="center">Created At</TableCell>
-                                <TableCell align="center">Title</TableCell>
+                                <TableCell align="center">Khách hàng</TableCell>
                                 <TableCell align="center">Order Id</TableCell>
                                 <TableCell align="center">Price</TableCell>
                                 <TableCell align="center">Status</TableCell>
@@ -143,22 +218,18 @@ const OrderTable = () => {
                                         <TableCell align="center"><p className="text-center">{format(new Date(item.createdAt), 'dd/MM/yyyy HH:mm:ss')}</p></TableCell>
                                         <TableCell align="center">
                                             {
-                                                <Box sx={{ display: 'flex', flexDirection: "column", alignItems: 'center', gap: 1 }}>
-                                                    {item.orderItems.map((i) => (
-                                                        <p key={i.id}>{i.product.title}, {i.quantity}</p>
-                                                    ))}
-                                                </Box>
+                                               item.shppingAddress.firstName +" "+ item.shppingAddress.lastName 
                                             }
                                         </TableCell>
                                         <TableCell align="center">{item.id}</TableCell>
                                         <TableCell align="center">{Number(item.discountedPrice).toLocaleString("vi-VN")}đ</TableCell>
                                         <TableCell align="center">
                                             <p className={`rounded-2xl p-2 ${item.orderStatus === 'PENDING' ? 'bg-yellow-400' :
-                                                    item.orderStatus === 'DELIVERED' ? 'bg-green-400' :
-                                                        item.orderStatus === 'SHIPPED' ? 'bg-blue-400' :
-                                                            item.orderStatus === 'CANCELED' ? 'bg-red-400' :
-                                                                item.orderStatus === 'CONFIRMED' ? 'bg-purple-400' :
-                                                                    'bg-gray-400' // Default color
+                                                item.orderStatus === 'DELIVERED' ? 'bg-green-400' :
+                                                    item.orderStatus === 'SHIPPED' ? 'bg-blue-400' :
+                                                        item.orderStatus === 'CANCELED' ? 'bg-red-400' :
+                                                            item.orderStatus === 'CONFIRMED' ? 'bg-purple-400' :
+                                                                'bg-gray-400' // Default color
                                                 }`}>{item.orderStatus}</p>
                                         </TableCell>
                                         <TableCell align="center">

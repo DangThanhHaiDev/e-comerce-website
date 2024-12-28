@@ -12,6 +12,9 @@ const DeleveryAddress = () => {
   const navigate = useNavigate(location.search)
   const searchParams = new URLSearchParams()
   const [addresses, setAddresses] = useState([])
+  const [isValidFull, setValidFull] = useState(true)
+  const [isValidPhone, setValidPhone] = useState(true)
+
 
   useEffect(() => {
     getAddresses()
@@ -23,7 +26,7 @@ const DeleveryAddress = () => {
       const { data } = response
       setAddresses(data)
       console.log(data);
-      
+
 
     } catch (error) {
 
@@ -31,6 +34,8 @@ const DeleveryAddress = () => {
   }
 
   const handleSubmit = (e) => {
+    setValidFull(true)
+    setValidPhone(true)
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const address = {
@@ -40,16 +45,30 @@ const DeleveryAddress = () => {
       city: data.get("city"),
       mobile: data.get("phoneNumber"),
     };
+    if (!address.firstName || !address.lastName || !address.city || !address.streetAddress) {
+      setValidFull(false)
+      return
+    }
+    if (!isVietnamPhoneNumber(address.mobile)) {
+      setValidPhone(false)
+      return
+    }
     dispatch(createOrder({ address, navigate }))
   };
 
-  const handleSubmit2 =async(address)=>{
+  function isVietnamPhoneNumber(phoneNumber) {
+    const vietnamPhoneRegex = /^0\d{9}$/;
+    return vietnamPhoneRegex.test(phoneNumber);
+  }
+
+
+  const handleSubmit2 = async (address) => {
     try {
       address.isExist = true
-      const {data} = await api.post(`api/orders/`, address)
-      navigate({search: `step=3&order_id=${data.id}`})
+      const { data } = await api.post(`api/orders/`, address)
+      navigate({ search: `step=3&order_id=${data.id}` })
     } catch (error) {
-      
+
     }
   }
 
@@ -74,7 +93,7 @@ const DeleveryAddress = () => {
                   size="large"
                   variant="contained"
                   className="pl-5"
-                  onClick={()=>handleSubmit2(address)}
+                  onClick={() => handleSubmit2(address)}
                 >
                   Delivery Here
                 </Button>
@@ -92,7 +111,7 @@ const DeleveryAddress = () => {
             <Grid container sx={{ padding: 0 }} spacing={3}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  required
+
                   id="firstName"
                   className="firstName"
                   name="firstName"
@@ -108,7 +127,7 @@ const DeleveryAddress = () => {
                   name="lastName"
                   label="Last Name"
                   fullWidth
-                  required
+
                   autoComplete="given-name"
                 />
               </Grid>
@@ -117,7 +136,7 @@ const DeleveryAddress = () => {
                   id="address"
                   className="address"
                   name="address"
-                  required
+
                   fullWidth
                   label="Address"
                   multiline
@@ -131,7 +150,7 @@ const DeleveryAddress = () => {
                   className="city"
                   name="city"
                   label="City"
-                  required
+
                   fullWidth
                   autoComplete="locality"
                 />
@@ -142,11 +161,25 @@ const DeleveryAddress = () => {
                   id="phoneNumber"
                   className="phoneNumber"
                   name="phoneNumber"
-                  required
+
                   label="Phone Number"
                   fullWidth
                   autoComplete="tel"
                 />
+              </Grid>
+              <Grid item xs={12}>
+                {
+                  !isValidFull &&
+                  <p className="text-sm text-red-700 text-left">Vui lòng nhập đầy đủ thông tin</p>
+
+                }
+              </Grid>
+              <Grid item xs={12}>
+                {
+                  !isValidPhone &&
+                  <p className="text-sm text-red-700 text-left">Số điện thoại không hợp lệ</p>
+
+                }
               </Grid>
               <Grid item xs={12} sm={6}>
                 <div className="w-full flex">
@@ -163,6 +196,7 @@ const DeleveryAddress = () => {
             </Grid>
           </form>
         </Box>
+
       </Grid>
     </Grid>
   );

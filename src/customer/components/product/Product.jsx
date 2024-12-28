@@ -62,6 +62,11 @@ export default function Product() {
   const totalPage = useSelector(store => store.product.products?.totalPages)
   const [page, setPage] = useState(1)
   const [checked, setChecked] = useState(false)
+  const lv1 = param.laveOne
+  const lv2 = param.laveTwo
+  
+  
+  
 
 
 
@@ -78,10 +83,12 @@ export default function Product() {
       stock: stock,
       pageNumber,
       pageSize: 6,
-      title: ""
+      title: "",
+      lv1,
+      lv2,
     }
     dispatch(findProducts(reqData))
-  }, [param.laveThree, colors, sizes, price, discount, sort, pageNumber, stock, sort, dispatch, user, ])
+  }, [param.laveThree, colors, sizes, price, discount, sort, pageNumber, stock, sort, dispatch, user,lv1, lv2])
 
   const hanldeSort = (e) => {
     e.preventDefault()

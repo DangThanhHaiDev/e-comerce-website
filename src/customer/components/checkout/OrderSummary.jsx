@@ -45,7 +45,7 @@ const OrderSummary = () => {
           {
             order.order ?
               order.order.orderItems.map(item => (
-                <CartItem key={item.id} product={item} />
+                <CartItem key={item.id} product={item} disible={true} />
               ))
               : ""
           }
@@ -79,7 +79,7 @@ const OrderSummary = () => {
                 className="w-full"
                 sx={{ bgcolor: "#9155fd" }}
               >
-                Checkout
+                Thanh toán
               </Button>
             </div>
           </div>

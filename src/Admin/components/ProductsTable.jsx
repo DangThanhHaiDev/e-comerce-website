@@ -88,7 +88,9 @@ export default function ProductTable() {
             minPrice: 0,
             maxPrice: 0,
             sort: 'price_low',
-            title: title
+            title: title,
+            minDiscount:0,
+            lv1:0, lv2:0
         }
         dispatch(findProducts(data))
     }, [page, location.search, isDelete, categoryAcive, title])

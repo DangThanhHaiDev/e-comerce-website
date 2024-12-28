@@ -5,28 +5,37 @@ import { useDispatch } from "react-redux";
 import { getNumberItems, getUserCart, removeCartItem, UpdateCartItem } from "../../../State/Cart/Action";
 import { useEffect } from "react";
 
-const CartItem = ({product}) => {
+const CartItem = ({ product, disible = false }) => {
   const dispatch = useDispatch()
-  
-  useEffect(()=>{
-    
-  },[])
-
-  const handleMinus = ()=>{
-    
-    dispatch(UpdateCartItem({...product, quantity: product.quantity-1}))
+  let index = 0;
+  if (product.size === "M") {
+    index = 1
   }
-  
-  const handleAdd = ()=>{        
-    dispatch(UpdateCartItem({...product, quantity: product.quantity+1}))
+  else {
+    index = 2
   }
 
-  const handleDelItem = ()=>{
+  useEffect(() => {
+
+  }, [])
+
+  const handleMinus = () => {
+
+    dispatch(UpdateCartItem({ ...product, quantity: product.quantity - 1 }))
+  }
+
+  const handleAdd = () => {
+    dispatch(UpdateCartItem({ ...product, quantity: product.quantity + 1 }))
+  }
+
+  const handleDelItem = () => {
     dispatch(removeCartItem(product))
     dispatch(getNumberItems())
   }
 
-  
+
+
+
   return (
     <div className=" shadow-lg rounded-md border-t-2 p-3">
       <div className="flex">
@@ -52,17 +61,25 @@ const CartItem = ({product}) => {
         </div>
       </div>
       <div className="flex items-center space-x-10 mt-0 text-sm">
-        <div className="flex items-center space-x-1 mt-1">
-          <IconButton onClick={handleMinus} disabled={product.quantity<=1}>
-            <RemoveCircleOutlineIcon />
-          </IconButton>
-          <span className="px-5 border py-1">{product.quantity}</span>
-          <IconButton sx={{color: "RGB(145 85 253)"}} onClick={handleAdd} disabled={product.quantity >= product.product.size.quantity}>
-            <AddCircleOutlineIcon />
-          </IconButton>
-        </div>
+        {
+          !disible &&
+          <div className="flex items-center space-x-1 mt-1">
+
+            <IconButton onClick={handleMinus} disabled={product.quantity <= 1}>
+              <RemoveCircleOutlineIcon />
+            </IconButton>
+            <span className="px-5 border py-1">{product.quantity}</span>
+            <IconButton sx={{ color: "RGB(145 85 253)" }} onClick={handleAdd} disabled={product.quantity >= product.product.size[index].quantity}>
+              <AddCircleOutlineIcon />
+            </IconButton>
+          </div>
+        }
         <div>
-            <Button onClick={handleDelItem} sx={{color: "RGB(145 85 253)", fontSize: "0.8rem"}}>REMOVE</Button>
+          {
+            !disible &&
+            <Button onClick={handleDelItem} sx={{ color: "RGB(145 85 253)", fontSize: "0.8rem" }}>REMOVE</Button>
+
+          }
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { api } from "../../../config/apiConfig";
 import { useNavigate, useParams } from "react-router-dom";
 
-    const Feedback = () => {
+    const Feedback = ({product}) => {
         const [start, setStart] = useState(5);
         const params = useParams()
         const navigate = useNavigate()

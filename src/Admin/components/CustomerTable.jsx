@@ -92,7 +92,7 @@ const CustomerTable = ()=>{
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {customers.length > 0 &&
+                            {Array.isArray(customers) && customers.length > 0 &&
                                 customers?.map((c) => (
                                     <TableRow
                                         key={c.id}
@@ -106,7 +106,7 @@ const CustomerTable = ()=>{
                                         <TableCell align="center">{c.createdAt}</TableCell>
                                         <TableCell align="center">{c.ordersNumber}</TableCell>
                                         <TableCell align="center">{!c.block? "Còn hoạt động": "Bị chặn"}</TableCell>
-                                        <TableCell align="center">{c.money}
+                                        <TableCell align="center">{Number(c.money).toLocaleString("vi-VN")}đ
                                         </TableCell>
                                         <TableCell align="center"><Button disabled={c.block} variant="contained" onClick={e=>handleBlock(c.id)}>Block</Button></TableCell>
                                         <TableCell align="center"><Button disabled={!c.block} variant="contained" onClick={e=>handleUnBlock(c.id)}>Un Block</Button></TableCell>

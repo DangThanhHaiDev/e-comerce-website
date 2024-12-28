@@ -1,6 +1,6 @@
-import { CssBaseline, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, useMediaQuery, useTheme } from "@mui/material"
+import { CssBaseline, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, Toolbar, useMediaQuery, useTheme } from "@mui/material"
 import { Box } from "@mui/system"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Route, Routes, useNavigate } from "react-router-dom"
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
@@ -18,8 +18,9 @@ import CreateProductTypeForm from "./components/CreateProductTypeForm";
 import AccountManager from "./components/AccountManager";
 import CreateAccount from "./components/CreateAccount";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserByToken } from "../State/Auth/Action";
+import { getUserByToken, logout_user } from "../State/Auth/Action";
 import TopProduct from "./components/TopProduct";
+import { Button } from "@headlessui/react";
 
 let menu = [
     { name: "Dashboard", path: "/admin", icon: <DashboardIcon /> },
@@ -38,6 +39,8 @@ const Admin = () => {
     const user = useSelector(store => store.auth.user)
     const dispatch = useDispatch()
     const token = localStorage.getItem("token")
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
 
     const handleClickIcon = (path) => {
         navigate(path)
@@ -49,13 +52,26 @@ const Admin = () => {
         }
     }, [])
 
-    if (user && user.role === "nhanvien") {        
+    if (user && user.role === "nhanvien") {
         menu = menu.filter((item) => (item.name !== "Dashboard" && item.name != "Customers" && item.name != "Account Manager"))
     }
-   
 
 
 
+    
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    const handleMua = ()=>{
+        navigate("/")
+    }
+    const handleLogout = ()=>{
+        dispatch(logout_user())
+        navigate("/")
+    }
     const drawer = (
         <Box sx={{
             overflow: "auto",
@@ -86,11 +102,33 @@ const Admin = () => {
                         <ListItemIcon>
                             <AccountCircleIcon />
                         </ListItemIcon>
-                        <ListItemText>Account</ListItemText>
+                        <ListItemText>
+                            <Button
+                                id="basic-button"
+                                aria-controls={open ? 'basic-menu' : undefined}
+                                aria-haspopup="true"
+                                aria-expanded={open ? 'true' : undefined}
+                                onClick={handleClick}
+                            >
+                                Account
+                            </Button>
+                            <Menu
+                                id="basic-menu"
+                                anchorEl={anchorEl}
+                                open={open}
+                                onClose={handleClose}
+                                MenuListProps={{
+                                    'aria-labelledby': 'basic-button',
+                                }}
+                            >
+                                <MenuItem onClick={handleMua}>Đi đến trang mua sắm</MenuItem>
+                                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                            </Menu>
+                        </ListItemText>
                     </ListItemButton>
                 </ListItem>
             </List>
-        </Box>
+        </Box >
     )
 
     return (

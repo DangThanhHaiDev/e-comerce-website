@@ -1,10 +1,10 @@
 import { api } from "../../../config/apiConfig"
 import { CANCEL_ORDER_FAILURE, CANCEL_ORDER_REQUEST, CANCEL_ORDER_SUCCESS, COMFIRM_ORDER_FAOLURE, COMFIRM_ORDER_REQUEST, COMFIRM_ORDER_SUCCESS, DELETE_ORDER_FAILURE, DELETE_ORDER_REQUEST, DELETE_ORDER_SUCCESS, DELIVERED_ORDER_FAILURE, DELIVERED_ORDER_REQUEST, DELIVERED_ORDER_SUCCESS, GET_ORDER_BY_DATE_FAILURE, GET_ORDER_BY_DATE_REQUEST, GET_ORDER_BY_DATE_SUCCESS, GET_ORDER_FAILURE, GET_ORDER_REQUEST, GET_ORDER_SUCCESS, SHIP_ORDER_FAILURE, SHIP_ORDER_REQUEST, SHIP_ORDER_SUCCESS } from "./ActionType"
 
-export const getAllOrders = ()=>async(dispatch)=>{
+export const getAllOrders = (status)=>async(dispatch)=>{
     dispatch({type: GET_ORDER_REQUEST})
     try {
-        const response = await api.get("/api/admin/orders/")
+        const response = await api.get(`/api/admin/orders/?status=${status}`)
         const {data} = response
         dispatch({type: GET_ORDER_SUCCESS, payload: data})
     } catch (error) {

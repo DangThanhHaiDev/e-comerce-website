@@ -6,6 +6,8 @@ import { Textarea } from '@headlessui/react';
 import { Button, Grid, TextField } from '@mui/material';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import axios from 'axios';
+import { api, API_BASE_URL } from "../../config/apiConfig";
+
 
 
 const style = {
@@ -89,11 +91,28 @@ export default function ProductModify({ open, handleClose, product, success }) {
                 }
             })
             const {data} =response
-            console.log(data);
             success()
             
         } catch (error) {
             
+        }
+        const token = localStorage.getItem('token')
+        try {
+            const formData = new FormData()
+            formData.append("file", file)
+            formData.append("id", product.id)
+            console.log(product.id);
+            
+            await axios.post(`${API_BASE_URL}/api/admin/products/image`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+
+        } catch (error) {
+                console.log(error.message);
+                
         }
     }
 

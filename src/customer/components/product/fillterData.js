@@ -1,25 +1,25 @@
 
 export const filters = [
-  {
-    id: "color",
-    name: "Color",
-    options: [
-      { value: "white", label: "White", checked: false },
-      { value: "beige", label: "Beige", checked: false },
-      { value: "blue", label: "Blue", checked: false },
-      { value: "brown", label: "Brown", checked: false },
-      { value: "green", label: "Green", checked: false },
-      { value: "purple", label: "Purple", checked: false },
-    ],
-  },
+  // {
+  //   id: "color",
+  //   name: "Color",
+  //   options: [
+  //     { value: "white", label: "White", checked: false },
+  //     { value: "beige", label: "Beige", checked: false },
+  //     { value: "blue", label: "Blue", checked: false },
+  //     { value: "brown", label: "Brown", checked: false },
+  //     { value: "green", label: "Green", checked: false },
+  //     { value: "purple", label: "Purple", checked: false },
+  //   ],
+  // },
   {
     id: "size",
     name: "Size",
     options: [
-      { value: "small", label: "S", checked: false },
-      { value: "medium", label: "M", checked: false },
-      { value: "large", label: "L", checked: true },
-      { value: "XL", label: "XL", checked: true }
+      { value: "S", label: "S", checked: false },
+      { value: "M", label: "M", checked: false },
+      { value: "L", label: "L", checked: true },
+      { value: "", label: "All Sizes", checked: true },
 
     ],
   },
@@ -27,10 +27,13 @@ export const filters = [
     id: "price",
     name: "Price",
     options: [
-      { value: "1_30", label: "1_300$", checked: false },
-      { value: "1_300", label: "100-300$", checked: false },
-      { value: "3_600", label: "300-600$", checked: false },
-      { value: "300_6000000", label: "300-6000$", checked: false },
+      { value: "0_100000", label: "Below 100 000 đ", checked: false },
+      { value: "100000_300000", label: "100 000 đ - 300 000 đ", checked: false },
+      { value: "300000_500000", label: "300 000 đ - 500 000 đ", checked: false },
+      { value: "500000_700000", label: "500 000 đ - 700 000 đ", checked: false },
+      { value: "700000_10000000000", label: "Above 1 000 000 đ", checked: false },
+      { value: "0_1000000000000000", label: "All Prices", checked: false },
+
     ],
   },
   {
@@ -46,13 +49,7 @@ export const filters = [
       { value: "70", label: "70% and above", checked: false },
       { value: "80", label: "80% and above", checked: false },
       { value: "90", label: "90% and above", checked: false },
-    ],
-  },{
-    id: "availability",
-    name: "Availability",
-    options: [
-      { value: "2l", label: "In Stock", checked: false },
-      { value: "6l", label: "Out Of Stock", checked: false },
+      { value: "0", label: "All products", checked: false }
     ],
   }
 ];
